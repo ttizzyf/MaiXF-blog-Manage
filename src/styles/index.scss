@@ -1,0 +1,306 @@
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.ml5 {
+  margin-left: 5px;
+}
+.mr5 {
+  margin-right: 5px;
+}
+.mt5 {
+  margin-top: 5px;
+}
+.mb5 {
+  margin-bottom: 5px;
+}
+.pl5 {
+  padding-left: 5px;
+}
+.pr5 {
+  padding-right: 5px;
+}
+.ml10 {
+  margin-left: 10px;
+}
+.mr10 {
+  margin-right: 10px;
+}
+.pl10 {
+  padding-left: 10px;
+}
+.pr10 {
+  padding-right: 10px;
+}
+.ml20 {
+  margin-left: 20px;
+}
+.mr20 {
+  margin-right: 20px;
+}
+.pl20 {
+  padding-left: 20px;
+}
+.pr20 {
+  padding-right: 20px;
+}
+.ml30 {
+  margin-left: 30px;
+}
+.mr30 {
+  margin-right: 30px;
+}
+.pl30 {
+  padding-left: 30px;
+}
+.pr30 {
+  padding-right: 30px;
+}
+.ml40 {
+  margin-left: 40px;
+}
+.mr40 {
+  margin-right: 40px;
+}
+.pl40 {
+  padding-left: 40px;
+}
+.pr40 {
+  padding-right: 40px;
+}
+.pd5 {
+  padding: 5px;
+}
+.pd10 {
+  padding: 10px;
+}
+.pd20 {
+  padding: 20px;
+}
+.pd40 {
+  padding: 20px;
+}
+.w32 {
+  width: 32px;
+}
+.w60 {
+  width: 60px;
+}
+.w64 {
+  width: 64px;
+}
+.w80 {
+  width: 80px;
+}
+.w100 {
+  width: 100px;
+}
+.w120 {
+  width: 120px;
+}
+.w200 {
+  width: 200px;
+}
+.w300 {
+  width: 300px;
+}
+.h32 {
+  height: 32px;
+}
+.h64 {
+  height: 64px;
+}
+.h100 {
+  height: 100px;
+}
+.h200 {
+  height: 200px;
+}
+.h300 {
+  height: 300px;
+}
+.mt10 {
+  margin-top: 10px;
+}
+.mt20 {
+  margin-top: 20px;
+}
+.mt30 {
+  margin-top: 30px;
+}
+.mb10 {
+  margin-bottom: 10px;
+}
+.mb20 {
+  margin-bottom: 20px;
+}
+.mb30 {
+  margin-bottom: 30px;
+}
+.fz10 {
+  font-size: 10px;
+}
+.fz12 {
+  font-size: 12px;
+}
+.fz14 {
+  font-size: 14px;
+}
+.fz16 {
+  font-size: 16px;
+}
+.fz18 {
+  font-size: 18px;
+}
+.fz20 {
+  font-size: 20px;
+}
+.fz24 {
+  font-size: 24px;
+}
+.lh1 {
+  line-height: 1;
+}
+.tac {
+  text-align: center;
+}
+.pointer {
+  cursor: pointer;
+}
+.flex {
+  display: flex;
+  align-items: center;
+}
+.between {
+  justify-content: space-between;
+}
+.jcenter {
+  justify-content: center;
+}
+.column {
+  flex-direction: column;
+}
+.start {
+  justify-content: start;
+}
+.flex-grow {
+  flex-grow: 1;
+}
+.caps {
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+}
+.pd8 {
+  padding: 8px;
+}
+.pd12 {
+  padding: 12px;
+}
+.pd16 {
+  padding: 16px;
+}
+.fw700 {
+  font-weight: 700;
+}
+.por {
+  position: relative;
+}
+.poa {
+  position: absolute;
+}
+.line {
+  height: 1px;
+  width: 100%;
+  border-bottom: dotted 2px rgba(225, 225, 235, 0.9);
+  margin: 20px 0;
+}
+// 玻璃特效
+.glass {
+  gap: 20px;
+  border-radius: 39px;
+  backdrop-filter: blur(4px);
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px;
+  border: 4px rgba(255, 255, 255, 0.4) solid;
+  border-bottom: 4px rgba(40, 40, 40, 0.35) solid;
+  border-right: 4px rgba(40, 40, 40, 0.35) solid;
+}
+.disabled {
+  cursor: no-drop;
+}
+.animationBtn {
+  box-sizing: border-box;
+  width: 50%;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: 3px;
+  color: $main;
+  background-color: $seconed;
+  padding: 0 16px;
+  height: 32px;
+  line-height: 32px;
+  transition-property: transform;
+  transition-duration: 0.05s;
+  transition-timing-function: ease-out;
+  &:hover {
+    color: $seconed;
+    background-color: $primary;
+    box-shadow: 0 0 16px 16px rgba($primary, 0.3);
+    transform: scale(1.05);
+    animation-name: pulsate;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+}
+@keyframes pulsate {
+  0% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+.popver-class {
+  background-color: $main !important;
+  color: $seconed !important;
+  border: none !important;
+}
+.headShake {
+  &:hover {
+    animation: headShake;
+    animation-duration: 1s;
+    animation-fill-mode: both;
+  }
+}
+.text-main {
+  color: $main;
+}
+.text-seconed {
+  color: $seconed;
+}
+.text-primary {
+  color: $primary;
+}
+.bg-main {
+  background-color: $main;
+}
+.bg-seconed {
+  background-color: $seconed;
+}
+.bg-primary {
+  background-color: $primary;
+}
+
+// .lazy-image {
+//   transition: all 0.3s linear;
+// }

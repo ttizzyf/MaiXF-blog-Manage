@@ -1,0 +1,10 @@
+@mixin link-colors($main, $seconed, $primary) {
+  background-color: $main;
+  color: $seconed;
+  &:hover {
+    background-color: $main;
+    color: $primary;
+    // box-shadow: 0 2px 12px 0 rgba(255, 255, 255, 0.5);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+}

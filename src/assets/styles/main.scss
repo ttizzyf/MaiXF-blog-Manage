@@ -1,0 +1,9 @@
+// 引入变量函数
+@import "./abstracts/functions.scss";
+@import "./abstracts/mixins.scss";
+@import "./abstracts/variables.scss";
+
+// 引入全局样式
+@import "./common/reset.scss";
+@import "./common/index.scss";
+@import "./common/typography.scss";
