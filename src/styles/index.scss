@@ -270,6 +270,17 @@
     transform: scale(1.05);
   }
 }
+@keyframes boxShadowShrink {
+  0% {
+    box-shadow: 0 0px 10px #ffffff;
+  }
+  50% {
+    box-shadow: 0 0px 20px #ffffff;
+  }
+  100% {
+    box-shadow: 0 0px 10px #ffffff;
+  }
+}
 .popver-class {
   background-color: $main !important;
   color: $seconed !important;

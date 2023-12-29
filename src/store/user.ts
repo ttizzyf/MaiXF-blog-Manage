@@ -1,12 +1,23 @@
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { defineStore } from "pinia";
+import storage from "@/utils/storage";
 
-export const userInfo = defineStore("userInfo", () => {
-  const userInfo = ref({
-    avatar:
-      "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
-    nickname: "老八契约",
-    email: "1374144742@qq.com",
-  });
-  return { userInfo };
+export const useUserStore = defineStore("useUserStore", () => {
+  let LoginInfo = ref(storage.get("userInfo"));
+
+  function removeLogin() {
+    storage.remove("userInfo");
+    LoginInfo.value = null;
+  }
+
+  watch(
+    LoginInfo,
+    async () => {
+      console.log(LoginInfo.value);
+      storage.set("userInfo", LoginInfo.value);
+    },
+    { deep: true }
+  );
+
+  return { LoginInfo, removeLogin };
 });
