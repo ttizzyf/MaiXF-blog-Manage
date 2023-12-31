@@ -2,13 +2,13 @@
 import { ref } from "vue";
 import { Operation, Tools } from "@element-plus/icons-vue";
 import { themeSetting } from "@/store/theme.ts";
-import { userInfo } from "@/store/user.ts";
+import { useUserStore } from "@/store/user.ts";
 import WHeadMenu from "@/components/WHeadMenu.vue";
 import WThemeDrawer from "@/components/WThemeDrawer.vue";
 import "@/styles/index.scss";
 import "animate.css";
 const theme = themeSetting();
-const user = userInfo();
+const user = useUserStore();
 
 const BlogName = ref(import.meta.env.VITE_APP_WEB_TITLE);
 </script>
@@ -45,12 +45,12 @@ const BlogName = ref(import.meta.env.VITE_APP_WEB_TITLE);
               <div class="avatar">
                 <el-image
                   style="height: 25px; width: 25px"
-                  :src="user.userInfo.avatar"
+                  :src="user.LoginInfo.avatar"
                   fit="cover"
                 />
               </div>
               <span class="ml10 fz12 text-seconed w64">{{
-                user.userInfo.nickname
+                user.LoginInfo.nickname
               }}</span>
             </div>
           </template>

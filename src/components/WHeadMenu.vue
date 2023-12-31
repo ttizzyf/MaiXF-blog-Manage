@@ -54,27 +54,25 @@ onMounted(() => {
   color: $seconed;
 }
 .el-menu--horizontal > .el-sub-menu :deep(.el-sub-menu__title) {
-  color: $seconed;
+  color: $main;
   &:hover {
-    background-color: $primary;
+    background-color: $main;
   }
 }
 .el-menu--horizontal > :deep(.el-menu-item) {
   color: $seconed !important;
   &:hover {
-    background-color: $primary;
+    background-color: $main;
   }
-}
-.el-menu--horizontal > .el-sub-menu :deep(.el-sub-menu__title) {
-  color: $seconed;
 }
 .el-menu--horizontal > .el-menu-item.is-active {
   // color: $primary;
   border-bottom-color: $primary;
 }
-.el-menu--horizontal .el-menu-item:not(.is-disabled):focus,
-.el-menu--horizontal .el-menu-item:not(.is-disabled):hover {
-  background-color: $primary;
-  color: $primary;
+.el-menu-item {
+  transition: none;
+}
+.el-menu--horizontal .el-menu-item:not(.is-disabled):focus {
+  background-color: $main;
 }
 </style>

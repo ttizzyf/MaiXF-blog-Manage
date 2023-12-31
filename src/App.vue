@@ -12,7 +12,8 @@ onMounted(() => {
   theme.themeIndex = theme.theme.list.length - 1;
   theme.ChangeColor();
   // 获取token,如果没有token,就去登录注册页面
-  let token = storage.get("token");
+  let token = storage.get("userInfo").token;
+  console.log(token);
   if (!token) {
     router.push("login");
   }

@@ -9,6 +9,8 @@ import {
 import { ref, onMounted } from "vue";
 import { WNotification } from "@/utils/toast";
 import { useUserStore } from "../store/user.ts";
+import { useRouter } from "vue-router";
+const router = useRouter();
 // import storage from "@/utils/storage";
 const userStore = useUserStore();
 const svgState = ref({
@@ -17,8 +19,8 @@ const svgState = ref({
 });
 
 const loginForm = ref({
-  email: "",
-  password: "",
+  email: "1374144742@qq.com",
+  password: "lcl17707145515",
   code: null,
 });
 
@@ -171,6 +173,7 @@ const userLogin = async () => {
         const { data } = await userLoginAPI(loginForm.value);
         userStore.LoginInfo = data.data;
         WNotification.success(data.message);
+        router.push("/home");
       } catch (err) {
         console.error(err);
       }

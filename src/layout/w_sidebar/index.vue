@@ -86,6 +86,7 @@ onMounted(() => {
 }
 .el-menu {
   border: none;
+  background-color: $main;
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
@@ -93,22 +94,19 @@ onMounted(() => {
   background-color: $main;
 }
 .el-menu-item {
-  color: $seconed;
+  margin-top: 10px;
+  color: $primary;
   background-color: $main;
+  transition: none;
   &:hover {
     background-color: $primary;
-    color: $seconed;
+    color: $main;
+    border-radius: 10px;
   }
 }
 .el-menu-item.is-active {
   background-color: $primary;
-}
-
-.el-menu-item:hover .el-aside {
-  transition: width 0.15s;
-  -webkit-transition: width 0.15s;
-  -moz-transition: width 0.15s;
-  -webkit-transition: width 0.15s;
-  -o-transition: width 0.15s;
+  color: $main;
+  border-radius: 10px;
 }
 </style>

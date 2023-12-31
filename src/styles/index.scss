@@ -219,11 +219,8 @@
 .glass {
   gap: 20px;
   border-radius: 39px;
-  backdrop-filter: blur(4px);
-  box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px;
-  border: 4px rgba(255, 255, 255, 0.4) solid;
-  border-bottom: 4px rgba(40, 40, 40, 0.35) solid;
-  border-right: 4px rgba(40, 40, 40, 0.35) solid;
+  backdrop-filter: blur(10px);
+  // box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px;
 }
 .disabled {
   cursor: no-drop;
@@ -272,13 +269,13 @@
 }
 @keyframes boxShadowShrink {
   0% {
-    box-shadow: 0 0px 10px #ffffff;
+    box-shadow: 0 0px 10px #64ff66;
   }
   50% {
-    box-shadow: 0 0px 20px #ffffff;
+    box-shadow: 0 0px 20px #64ff66;
   }
   100% {
-    box-shadow: 0 0px 10px #ffffff;
+    box-shadow: 0 0px 10px #64ff66;
   }
 }
 .popver-class {

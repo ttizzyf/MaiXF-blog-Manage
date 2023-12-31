@@ -13,7 +13,7 @@ onMounted(() => {
   if (canvas !== null && canvas instanceof HTMLCanvasElement) {
     const spline = new Application(canvas);
     spline.load(
-      "https://draft.spline.design/fZ6cg6mQqRUdzCo4/scene.splinecode"
+      "https://draft.spline.design/hMpEmqUrcQla4mOk/scene.splinecode"
     );
   }
 });
@@ -21,16 +21,16 @@ onMounted(() => {
 
 <template>
   <div class="loginControl bg-main">
-    <div class="header">
-      <div class="logo-box flex start mr20 pl20">
-        <img v-if="theme.showLogo" src="@/assets/SVG/head.svg" alt="" />
-        <span :class="['blogName', 'pl10']">{{ BlogName + "·ADMIN" }}</span>
+    <div class="login-box flex jcenter por">
+      <div class="header poa">
+        <div class="logo-box flex start mr20 pl20">
+          <img v-if="theme.showLogo" src="@/assets/SVG/head.svg" alt="" />
+          <span :class="['blogName', 'pl10']">{{ BlogName + "·ADMIN" }}</span>
+        </div>
       </div>
-    </div>
-    <div class="login-box flex jcenter">
       <div class="center-box flex start">
         <canvas id="canvas3d"></canvas>
-        <div class="login-form-box poa">
+        <div class="login-form-box poa glass">
           <div class="por flex column login-form">
             <div class="title fz24 text-primary fw700">
               {{ BlogName }}的后台管理系统
@@ -70,6 +70,8 @@ onMounted(() => {
   height: 100vh;
   width: 100vw;
   .header {
+    left: 0;
+    top: 0;
     height: 80px;
     .logo-box {
       width: 200px;
