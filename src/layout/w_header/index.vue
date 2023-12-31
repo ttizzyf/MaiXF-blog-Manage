@@ -5,12 +5,21 @@ import { themeSetting } from "@/store/theme.ts";
 import { useUserStore } from "@/store/user.ts";
 import WHeadMenu from "@/components/WHeadMenu.vue";
 import WThemeDrawer from "@/components/WThemeDrawer.vue";
+import storage from "@/utils/storage.ts";
+import { useRouter } from "vue-router";
 import "@/styles/index.scss";
 import "animate.css";
 const theme = themeSetting();
 const user = useUserStore();
+const router = useRouter();
 
 const BlogName = ref(import.meta.env.VITE_APP_WEB_TITLE);
+
+// 退出登录
+const exitLogin = () => {
+  storage.remove("userInfo");
+  router.push("/login");
+};
 </script>
 
 <template>
@@ -54,7 +63,7 @@ const BlogName = ref(import.meta.env.VITE_APP_WEB_TITLE);
               }}</span>
             </div>
           </template>
-          <div class="flex jcenter pointer">
+          <div class="flex jcenter pointer" @click="exitLogin">
             <i class="iconfont mr10">&#xe676;</i>
             <span>退出登录</span>
           </div>

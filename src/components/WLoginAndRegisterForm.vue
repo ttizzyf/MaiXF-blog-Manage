@@ -238,7 +238,21 @@ onMounted(() => {
       <div class="flex jcenter">
         <div class="animationBtn pointer" @click="userLogin">登录</div>
       </div>
+      <div class="login-way-box mt20 flex between">
+        <div class="animationBtn pointer w64 mr10">游客浏览</div>
+        <el-button disabled>手机登录</el-button>
+        <el-button disabled>二维码登录</el-button>
+      </div>
+      <div class="tac mt10 mb10 text-seconed fz12">其他登录方式</div>
+      <div class="login-icon-box flex between">
+        <i class="iconfont fz24 text-seconed pointer">&#xe673;</i>
+        <i class="iconfont fz24 text-seconed pointer">&#xe686;</i>
+        <i class="iconfont fz24 text-seconed pointer">&#xe8bb;</i>
+        <i class="iconfont fz24 text-seconed pointer">&#xe882;</i>
+        <i class="iconfont fz24 text-seconed pointer">&#xe67a;</i>
+      </div>
     </div>
+
     <div class="register-box" v-else>
       <el-form
         ref="registerDOM"
@@ -297,12 +311,16 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+.el-input {
+  --el-input-text-color: #ffffff;
+}
+
 .login-and-register {
   :deep(.el-form-item__label) {
     color: $seconed;
   }
   :deep(.el-input__wrapper) {
-    background-color: $main;
+    background-color: transparent;
   }
   :deep(.el-input__wrapper.is-focus) {
     box-shadow: 0 0 0 1px $seconed;
