@@ -15,12 +15,8 @@ const BlogName = ref(import.meta.env.VITE_APP_WEB_TITLE);
 const routes = ref<Array<RouteRecordSingleView>>([]);
 
 const getRoutes = () => {
-  let route = router.getRoutes();
-  route.forEach((item: any) => {
-    if (!item.meta.hidden) {
-      routes.value.push(item);
-    }
-  });
+  routes.value = (router.options.routes[0]?.children ||
+    []) as Array<RouteRecordSingleView>;
   console.log(routes.value);
 };
 
@@ -41,6 +37,7 @@ onMounted(() => {
       :default-active="menuStore.chooseMenuName"
       unique-opened
       class="el-menu-vertical-demo"
+      :background-color="theme.theme.list[theme.themeIndex].bg"
       :collapse="theme.shrinkSidebar"
     >
       <template v-for="item in routes" :key="item.name">
@@ -53,7 +50,19 @@ onMounted(() => {
             <i class="iconfont icon mr10" v-html="item.meta?.icon"></i>
             <span>{{ item.meta?.title }}</span>
           </template>
-          <el-menu-item-group :title="item.meta?.title"></el-menu-item-group>
+          <el-menu-item-group>
+            <template
+              v-for="itm in item.children as RouteRecordSingleView[]"
+              :key="itm.name"
+            >
+              <el-menu-item :index="itm.name">
+                <template #title>
+                  <i class="iconfont icon mr10" v-html="item.meta?.icon"></i>
+                  <span>{{ itm.meta?.title }}</span>
+                </template>
+              </el-menu-item>
+            </template>
+          </el-menu-item-group>
         </el-sub-menu>
         <!-- 当子菜单数目小于1时 -->
         <el-menu-item v-else :index="item.name">
@@ -70,6 +79,7 @@ onMounted(() => {
   height: 100%;
   background-color: $main;
   border-right: 1px solid rgba($color: #ffffff, $alpha: 0.2);
+  width: 100%;
   // box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.12);
   .logo {
     height: 60px;
@@ -88,13 +98,16 @@ onMounted(() => {
   border: none;
   background-color: $main;
 }
+.el-menu-vertical-demo {
+  background-color: $main;
+}
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
   min-height: 300px;
   background-color: $main;
 }
 .el-menu-item {
-  margin-top: 10px;
+  margin-top: 5px;
   color: $primary;
   background-color: $main;
   transition: none;
@@ -108,5 +121,20 @@ onMounted(() => {
   background-color: $primary;
   color: $main;
   border-radius: 10px;
+}
+:deep(.el-sub-menu__title) {
+  color: $primary;
+  &:hover {
+    background-color: $primary;
+    color: $main;
+    border-radius: 10px;
+  }
+}
+:deep(.el-menu-item-group__title) {
+  padding: 0px 0px 0px 20px;
+}
+:deep(.el-popper .is-pure .is-light) {
+  background: --el-menu-bg-color;
+  border: none;
 }
 </style>

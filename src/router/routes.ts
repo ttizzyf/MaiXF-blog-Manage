@@ -50,7 +50,6 @@ const frameIn = [
       {
         path: "/blog",
         name: "blog",
-        component: () => import("@/views/blog/index.vue"),
         meta: {
           title: "博客管理",
           hidden: false,
@@ -58,7 +57,44 @@ const frameIn = [
           link: false,
           requiresAuth: true,
         },
-        children: [],
+        children: [
+          {
+            path: "/blog/blogArticle",
+            name: "blogArticle",
+            component: () => import("@/views/blog/blogArticle/index.vue"),
+            meta: {
+              title: "文章管理",
+              hidden: false,
+              icon: "&#xe643;",
+              link: false,
+              requiresAuth: true,
+            },
+          },
+          {
+            path: "/blog/blogComment",
+            name: "blogComment",
+            component: () => import("@/views/blog/blogComment/index.vue"),
+            meta: {
+              title: "文章评论",
+              hidden: false,
+              icon: "&#xe643;",
+              link: false,
+              requiresAuth: true,
+            },
+          },
+          {
+            path: "/blog/createBlog",
+            name: "createBlog",
+            component: () => import("@/views/blog/createBlog/index.vue"),
+            meta: {
+              title: "新建博文",
+              hidden: false,
+              icon: "&#xe643;",
+              link: false,
+              requiresAuth: true,
+            },
+          },
+        ],
       },
       {
         path: "/message",
@@ -72,6 +108,55 @@ const frameIn = [
           requiresAuth: true,
         },
         children: [],
+      },
+      {
+        path: "/system",
+        name: "system",
+        meta: {
+          title: "系统管理",
+          hidden: false,
+          icon: "&#xe62c;",
+          link: false,
+          requiresAuth: true,
+        },
+        children: [
+          {
+            path: "/system/user",
+            name: "user",
+            component: () => import("@/views/system/user/index.vue"),
+            meta: {
+              title: "用户管理",
+              hidden: false,
+              icon: "&#xe62c;",
+              link: false,
+              requiresAuth: true,
+            },
+          },
+          {
+            path: "/system/power",
+            name: "power",
+            component: () => import("@/views/system/power/index.vue"),
+            meta: {
+              title: "权限管理",
+              hidden: false,
+              icon: "&#xe62c;",
+              link: false,
+              requiresAuth: true,
+            },
+          },
+          {
+            path: "/system/operate",
+            name: "operate",
+            component: () => import("@/views/system/operate/index.vue"),
+            meta: {
+              title: "操作管理",
+              hidden: false,
+              icon: "&#xe62c;",
+              link: false,
+              requiresAuth: true,
+            },
+          },
+        ],
       },
     ],
     meta: {

@@ -50,7 +50,10 @@ const theme = themeSetting();
     <el-divider>主题选择</el-divider>
     <div class="flex jcenter">
       <span class="fz12 pr10 w80">主题选择</span>
-      <el-select v-model="theme.themeIndex" @change="theme.ChangeColor">
+      <el-select
+        v-model="theme.themeIndex"
+        @change="theme.ChangeColor(theme.themeIndex)"
+      >
         <el-option
           v-for="(item, index) in theme.theme.list"
           :key="item.bg"

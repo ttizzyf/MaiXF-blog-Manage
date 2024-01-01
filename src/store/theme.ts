@@ -20,13 +20,18 @@ export const themeSetting = defineStore("themeSetting", () => {
   };
   // 主题索引
   const themeIndex = ref(0);
-  const ChangeColor = () => {
-    if (themeIndex.value >= theme.list.length - 1) {
-      themeIndex.value = 0;
+  const ChangeColor = (index: number) => {
+    console.log(index);
+    let colorGroup;
+    if (typeof index === "number" || index === 0) {
     } else {
-      themeIndex.value++;
+      if (themeIndex.value >= theme.list.length - 1) {
+        themeIndex.value = 0;
+      } else {
+        themeIndex.value++;
+      }
     }
-    let colorGroup = theme.list[themeIndex.value];
+    colorGroup = theme.list[themeIndex.value];
     document
       .getElementsByTagName("body")[0]
       .style.setProperty("--primary", `${colorGroup.primary}`);

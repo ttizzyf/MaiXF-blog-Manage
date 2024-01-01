@@ -110,9 +110,6 @@ const exitLogin = () => {
           color: $seconed;
         }
       }
-      .head-menu {
-        width: 400px;
-      }
     }
   }
 

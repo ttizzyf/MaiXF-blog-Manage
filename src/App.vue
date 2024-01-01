@@ -28,4 +28,10 @@ onMounted(() => {
 body {
   font-family: MULPX5na6Lbx;
 }
+:root {
+  --el-menu-bg-color: $main;
+  --el-border-color-light: rgba(255, 255, 255, 0.2);
+  // --el-bg-color-overlay: $main !important;
+  // --el-border-color-light: $main;
+}
 </style>

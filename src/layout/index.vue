@@ -22,6 +22,7 @@ import WSidebar from "./w_sidebar/index.vue";
 }
 .el-aside {
   width: auto;
+  overflow: unset;
 }
 .el-header {
   padding: 0px;
