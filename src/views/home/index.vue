@@ -1,9 +1,21 @@
 <script lang="ts" setup>
 import "@/styles/index.scss";
-import { ref, reactive, onMounted, nextTick } from "vue";
+import {
+  ref,
+  reactive,
+  onMounted,
+  nextTick,
+  onActivated,
+  onBeforeUnmount,
+} from "vue";
 import { useUserStore } from "@/store/user.ts";
 import storage from "@/utils/storage";
 import { CountUp } from "countup.js";
+import { useTemplateRefsList, useEventListener } from "@vueuse/core";
+import * as echarts from "echarts";
+import { themeSetting } from "@/store/theme";
+const theme = themeSetting();
+const themeColor = theme.theme.list[theme.themeIndex];
 const userInfo = useUserStore();
 function getTimeState() {
   let timeNow = new Date();
@@ -156,9 +168,88 @@ const initCountUp = () => {
   countUpFun("message_board");
 };
 
+// 获取所有的echarts的DOM元素
+const refs = useTemplateRefsList<HTMLDivElement>();
+
+// 获取所有的echarts,当视口宽度变化时,重新设置echarts表
+const echartsControls: any[] = reactive([]);
+
+// 用户增长情况echarts表
+const initUserGrowthEcharts = () => {
+  const userGrowthEcharts = echarts.init(refs.value[0]);
+  // 主题色
+  const option = {
+    grid: {
+      top: 0,
+      right: 0,
+      bottom: 20,
+      left: 0,
+    },
+    xAxis: {
+      data: [
+        "星期一",
+        "星期二",
+        "星期三",
+        "星期四",
+        "星期五",
+        "星期六",
+        "星期天",
+      ],
+    },
+    yAxis: {},
+    legend: {
+      data: ["访问量", "注册量"],
+      textStyle: {
+        color: "#73767a",
+      },
+    },
+    series: [
+      {
+        name: "访问量",
+        data: [100, 160, 280, 230, 190, 200, 480],
+        type: "line",
+        smooth: true,
+        areaStyle: {
+          color: "#8595F4",
+        },
+      },
+      {
+        name: "注册量",
+        data: [45, 180, 146, 99, 210, 127, 288],
+        type: "line",
+        smooth: true,
+        areaStyle: {
+          color: "#F48595",
+          opacity: 0.5,
+        },
+      },
+    ],
+  };
+  userGrowthEcharts.setOption(option);
+  echartsControls.push(userGrowthEcharts);
+};
+
+const echartsResize = () => {
+  nextTick(() => {
+    for (const key in echartsControls) {
+      echartsControls[key].resize();
+    }
+  });
+};
+
+onActivated(() => {
+  echartsResize();
+});
+
 onMounted(() => {
   startWork();
   initCountUp();
+  initUserGrowthEcharts();
+  useEventListener(window, "resize", echartsResize);
+});
+
+onBeforeUnmount(() => {
+  clearInterval(workTimer);
 });
 </script>
 
@@ -197,8 +288,8 @@ onMounted(() => {
     <div class="mt20">
       <el-row :gutter="20">
         <el-col :sm="12" :lg="6">
-          <div class="panel mb20 bg-seconed suspension">
-            <div class="fz16 text-main fw700">访问总数</div>
+          <div class="panel mb20 suspension">
+            <div class="fz16 fw700">访问总数</div>
             <div class="flex between mt20">
               <div>
                 <i class="iconfont fz24" style="color: #8595f4">&#xe634;</i>
@@ -218,7 +309,7 @@ onMounted(() => {
         </el-col>
         <el-col :sm="12" :lg="6">
           <div class="panel mb20 bg-seconed suspension">
-            <div class="fz16 text-main fw700">用户注册总数</div>
+            <div class="fz16 fw700">用户注册总数</div>
             <div class="flex between mt20">
               <div>
                 <i class="iconfont fz24" style="color: #ad85f4">&#xe8ca;</i>
@@ -238,7 +329,7 @@ onMounted(() => {
         </el-col>
         <el-col :sm="12" :lg="6">
           <div class="panel mb20 bg-seconed suspension">
-            <div class="fz16 text-main fw700">文章留言数</div>
+            <div class="fz16 fw700">文章留言数</div>
             <div class="flex between mt20">
               <div>
                 <i class="iconfont fz24" style="color: #74a8b5">&#xe8c5;</i>
@@ -258,7 +349,7 @@ onMounted(() => {
         </el-col>
         <el-col :sm="12" :lg="6">
           <div class="panel mb20 bg-seconed suspension">
-            <div class="fz16 text-main fw700">留言板留言</div>
+            <div class="fz16 fw700">留言板留言</div>
             <div class="flex between mt20">
               <div>
                 <i class="iconfont fz24" style="color: #f48595">&#xe608;</i>
@@ -275,6 +366,23 @@ onMounted(() => {
               </div>
             </div>
           </div>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="growth-echarts">
+      <el-row :gutter="20">
+        <el-col class="mb20" :xs="24" :sm="24" :md="12" :lg="9">
+          <el-card shadow="hover" header="用户增长情况">
+            <div class="userInfo-echarts" :ref="refs.set"></div>
+          </el-card>
+        </el-col>
+        <el-col class="mb20" :xs="24" :sm="24" :md="12" :lg="9">
+          <el-card shadow="hover" header="用户访问方式">
+            <div class="userInfo-echarts" :ref="refs.set"></div>
+          </el-card>
+        </el-col>
+        <el-col class="mb20" :xs="24" :sm="24" :md="24" :lg="6">
+          <el-card shadow="hover" header="用户最新留言"> </el-card>
         </el-col>
       </el-row>
     </div>
@@ -324,9 +432,13 @@ onMounted(() => {
   }
 }
 .panel {
-  background-color: $seconed;
+  background-color: #fff;
   padding: 25px;
   margin-bottom: 20px;
   border-radius: 4px;
+}
+.userInfo-echarts {
+  height: 370px;
+  width: 100%;
 }
 </style>
