@@ -10,6 +10,7 @@ import { ref, onMounted } from "vue";
 import { WNotification } from "@/utils/toast";
 import { useUserStore } from "../store/user.ts";
 import { useRouter } from "vue-router";
+import { visitorRecord } from "@/api/common.ts";
 const router = useRouter();
 // import storage from "@/utils/storage";
 const userStore = useUserStore();
@@ -181,6 +182,11 @@ const userLogin = async () => {
   });
 };
 
+const tryDemo = async () => {
+  const res = await visitorRecord({ type: 1 });
+  console.log(res);
+};
+
 onMounted(() => {
   userLoginCodeFC();
 });
@@ -245,7 +251,9 @@ onMounted(() => {
       </div>
       <div class="tac mt10 mb10 text-seconed fz12">其他登录方式</div>
       <div class="login-icon-box flex between">
-        <i class="iconfont fz24 text-seconed pointer">&#xe673;</i>
+        <i @click="tryDemo" class="iconfont fz24 text-seconed pointer"
+          >&#xe673;</i
+        >
         <i class="iconfont fz24 text-seconed pointer">&#xe686;</i>
         <i class="iconfont fz24 text-seconed pointer">&#xe8bb;</i>
         <i class="iconfont fz24 text-seconed pointer">&#xe882;</i>
