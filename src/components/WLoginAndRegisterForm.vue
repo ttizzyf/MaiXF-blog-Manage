@@ -174,6 +174,7 @@ const userLogin = async () => {
         const { data } = await userLoginAPI(loginForm.value);
         userStore.LoginInfo = data.data;
         WNotification.success(data.message);
+        visitorRecord({ type: 1, nickname: userStore.LoginInfo.nickname });
         router.push("/home");
       } catch (err) {
         console.error(err);
@@ -182,10 +183,7 @@ const userLogin = async () => {
   });
 };
 
-const tryDemo = async () => {
-  const res = await visitorRecord({ type: 1 });
-  console.log(res);
-};
+const tryDemo = async () => {};
 
 onMounted(() => {
   userLoginCodeFC();
