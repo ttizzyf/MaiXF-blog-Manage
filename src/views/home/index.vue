@@ -8,13 +8,18 @@ import {
   onActivated,
   onBeforeUnmount,
   computed,
+  Ref,
 } from "vue";
 import { useUserStore } from "@/store/user.ts";
 import storage from "@/utils/storage";
 import { CountUp } from "countup.js";
 import { useTemplateRefsList, useEventListener } from "@vueuse/core";
+import { getBlogInfoList, getWeekVistorAndRegister } from "api/home.ts";
+import { browsing } from "@/types/home.ts";
 import * as echarts from "echarts";
+
 const userInfo = useUserStore();
+// 时间转换
 function getTimeState() {
   let timeNow = new Date();
   let hours = timeNow.getHours();
@@ -143,6 +148,16 @@ const formatSeconds = (seconds: number) => {
     result = dayTime + "天" + result;
   }
   return result;
+};
+
+//
+const BlogInfoList: Ref<browsing> | Ref = ref({});
+// 获取博客浏览和用户信息
+const getBlogInfoListAPI = async () => {
+  const res = await getBlogInfoList();
+  BlogInfoList.value = res.data.data;
+  initCountUp();
+  console.log(BlogInfoList.value);
 };
 
 // 自增数字动画
@@ -399,7 +414,7 @@ onActivated(() => {
 
 onMounted(() => {
   startWork();
-  initCountUp();
+  getBlogInfoListAPI();
   initUserGrowthEcharts();
   initUserSourceChart();
   useEventListener(window, "resize", echartsResize);
@@ -454,12 +469,14 @@ onBeforeUnmount(() => {
                   class="fw700 text-primary ml10"
                   style="font-size: 30px"
                   id="total_number"
-                  >1234</span
+                  >{{ BlogInfoList.visitorCount }}</span
                 >
               </div>
               <div class="add_number fz16 fw700">
                 今日新增
-                <span class="text-primary">24</span>
+                <span class="text-primary">{{
+                  BlogInfoList.todayVisitor
+                }}</span>
               </div>
             </div>
           </div>
@@ -474,12 +491,14 @@ onBeforeUnmount(() => {
                   class="fw700 text-primary ml10"
                   style="font-size: 30px"
                   id="total_register"
-                  >42</span
+                  >{{ BlogInfoList.registerCount }}</span
                 >
               </div>
               <div class="add_number fz16 fw700">
                 今日新增
-                <span class="text-primary">12</span>
+                <span class="text-primary">{{
+                  BlogInfoList.registerToday
+                }}</span>
               </div>
             </div>
           </div>
@@ -494,12 +513,14 @@ onBeforeUnmount(() => {
                   class="fw700 text-primary ml10"
                   style="font-size: 30px"
                   id="article_message"
-                  >217</span
+                  >{{ BlogInfoList.articleCount }}</span
                 >
               </div>
               <div class="add_number fz16 fw700">
                 今日新增
-                <span class="text-primary">8</span>
+                <span class="text-primary">{{
+                  BlogInfoList.articleToday
+                }}</span>
               </div>
             </div>
           </div>
@@ -514,12 +535,12 @@ onBeforeUnmount(() => {
                   class="fw700 text-primary ml10"
                   style="font-size: 30px"
                   id="message_board"
-                  >513</span
+                  >{{ BlogInfoList.boardCount }}</span
                 >
               </div>
               <div class="add_number fz16 fw700">
                 今日新增
-                <span class="text-primary">31</span>
+                <span class="text-primary">{{ BlogInfoList.boardToday }}</span>
               </div>
             </div>
           </div>
