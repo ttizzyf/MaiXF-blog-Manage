@@ -14,7 +14,11 @@ import { useUserStore } from "@/store/user.ts";
 import storage from "@/utils/storage";
 import { CountUp } from "countup.js";
 import { useTemplateRefsList, useEventListener } from "@vueuse/core";
-import { getBlogInfoList, getWeekVistorAndRegister } from "api/home.ts";
+import {
+  getBlogInfoList,
+  getWeekVistorAndRegister,
+  getvisitorBrowserType,
+} from "api/home.ts";
 import { browsing } from "@/types/home.ts";
 import * as echarts from "echarts";
 
@@ -151,7 +155,7 @@ const formatSeconds = (seconds: number) => {
 };
 
 //
-const BlogInfoList: Ref<browsing> | Ref = ref({});
+const BlogInfoList: Ref<browsing> | Ref = ref([]);
 // 获取博客浏览和用户信息
 const getBlogInfoListAPI = async () => {
   const res = await getBlogInfoList();
@@ -188,7 +192,9 @@ const refs = useTemplateRefsList<HTMLDivElement>();
 const echartsControls: any[] = reactive([]);
 
 // 用户增长情况echarts表
-const initUserGrowthEcharts = () => {
+const initUserGrowthEcharts = async () => {
+  const res = await getWeekVistorAndRegister();
+  let data = res.data.data;
   const userGrowthEcharts = echarts.init(refs.value[0]);
   // 用户增长情况echarts数据
   const option = {
@@ -199,15 +205,7 @@ const initUserGrowthEcharts = () => {
       left: 0,
     },
     xAxis: {
-      data: [
-        "星期一",
-        "星期二",
-        "星期三",
-        "星期四",
-        "星期五",
-        "星期六",
-        "星期天",
-      ],
+      data: data.days,
     },
     yAxis: {},
     legend: {
@@ -219,7 +217,7 @@ const initUserGrowthEcharts = () => {
     series: [
       {
         name: "访问量",
-        data: [100, 160, 280, 230, 190, 200, 480],
+        data: data.visitor,
         type: "line",
         smooth: true,
         areaStyle: {
@@ -228,7 +226,7 @@ const initUserGrowthEcharts = () => {
       },
       {
         name: "注册量",
-        data: [45, 180, 146, 99, 210, 127, 288],
+        data: data.register,
         type: "line",
         smooth: true,
         areaStyle: {
@@ -243,7 +241,9 @@ const initUserGrowthEcharts = () => {
   echartsControls.push(userGrowthEcharts);
 };
 // 用户访问方式echarts表
-const initUserSourceChart = () => {
+const initUserSourceChart = async () => {
+  const res = await getvisitorBrowserType();
+  console.log(res);
   const UserSourceChart = echarts.init(refs.value[1] as HTMLElement);
   const pathSymbols = {
     reindeer:
@@ -414,8 +414,8 @@ onActivated(() => {
 
 onMounted(() => {
   startWork();
-  getBlogInfoListAPI();
-  initUserGrowthEcharts();
+  // getBlogInfoListAPI();
+  // initUserGrowthEcharts();
   initUserSourceChart();
   useEventListener(window, "resize", echartsResize);
 });
@@ -469,14 +469,12 @@ onBeforeUnmount(() => {
                   class="fw700 text-primary ml10"
                   style="font-size: 30px"
                   id="total_number"
-                  >{{ BlogInfoList.visitorCount }}</span
+                  >{{ BlogInfoList[0] || 0 }}</span
                 >
               </div>
               <div class="add_number fz16 fw700">
                 今日新增
-                <span class="text-primary">{{
-                  BlogInfoList.todayVisitor
-                }}</span>
+                <span class="text-primary">{{ BlogInfoList[1] || 0 }}</span>
               </div>
             </div>
           </div>
@@ -491,14 +489,12 @@ onBeforeUnmount(() => {
                   class="fw700 text-primary ml10"
                   style="font-size: 30px"
                   id="total_register"
-                  >{{ BlogInfoList.registerCount }}</span
+                  >{{ BlogInfoList[2] || 0 }}</span
                 >
               </div>
               <div class="add_number fz16 fw700">
                 今日新增
-                <span class="text-primary">{{
-                  BlogInfoList.registerToday
-                }}</span>
+                <span class="text-primary">{{ BlogInfoList[3] || 0 }}</span>
               </div>
             </div>
           </div>
@@ -513,14 +509,12 @@ onBeforeUnmount(() => {
                   class="fw700 text-primary ml10"
                   style="font-size: 30px"
                   id="article_message"
-                  >{{ BlogInfoList.articleCount }}</span
+                  >{{ BlogInfoList[4] || 0 }}</span
                 >
               </div>
               <div class="add_number fz16 fw700">
                 今日新增
-                <span class="text-primary">{{
-                  BlogInfoList.articleToday
-                }}</span>
+                <span class="text-primary">{{ BlogInfoList[5] || 0 }}</span>
               </div>
             </div>
           </div>
@@ -535,12 +529,12 @@ onBeforeUnmount(() => {
                   class="fw700 text-primary ml10"
                   style="font-size: 30px"
                   id="message_board"
-                  >{{ BlogInfoList.boardCount }}</span
+                  >{{ BlogInfoList[6] || 0 }}</span
                 >
               </div>
               <div class="add_number fz16 fw700">
                 今日新增
-                <span class="text-primary">{{ BlogInfoList.boardToday }}</span>
+                <span class="text-primary">{{ BlogInfoList[7] || 0 }}</span>
               </div>
             </div>
           </div>
