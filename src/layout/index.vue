@@ -2,6 +2,8 @@
 import WHeader from "./w_header/index.vue";
 import WMain from "./w_main/index.vue";
 import WSidebar from "./w_sidebar/index.vue";
+import WBreadcrumb from "@/components/WBreadcrumb.vue";
+import "@/styles/index.scss";
 </script>
 
 <template>
@@ -9,8 +11,16 @@ import WSidebar from "./w_sidebar/index.vue";
     <el-container>
       <el-aside><WSidebar></WSidebar></el-aside>
       <el-container>
-        <el-header><WHeader></WHeader></el-header>
-        <el-main><WMain></WMain></el-main>
+        <el-header>
+          <div>
+            <WHeader></WHeader>
+          </div>
+        </el-header>
+        <el-main>
+          <!-- 面包屑 -->
+          <WBreadcrumb></WBreadcrumb>
+          <WMain></WMain>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -18,7 +28,7 @@ import WSidebar from "./w_sidebar/index.vue";
 
 <style lang="scss" scoped>
 .el-container {
-  height: 100vh;
+  min-height: 100vh;
 }
 .el-aside {
   width: auto;
