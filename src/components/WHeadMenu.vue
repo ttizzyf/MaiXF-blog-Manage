@@ -25,6 +25,8 @@ onMounted(() => {
   <el-menu
     :default-active="menuStore.chooseMenuName"
     mode="horizontal"
+    @select="menuStore.chooseRouter"
+    :router="true"
     :text-color="theme.theme.list[theme.themeIndex].text"
     :background-color="theme.theme.list[theme.themeIndex].bg"
     :ellipsis="false"

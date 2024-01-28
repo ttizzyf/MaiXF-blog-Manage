@@ -112,7 +112,7 @@
   width: 80px;
 }
 .w100 {
-  width: 100px;
+  width: 100%;
 }
 .w120 {
   width: 120px;
@@ -229,6 +229,9 @@
 }
 .poa {
   position: absolute;
+}
+.fixed {
+  position: fixed;
 }
 .line {
   height: 1px;

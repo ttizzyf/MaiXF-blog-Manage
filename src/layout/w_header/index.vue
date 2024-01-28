@@ -23,7 +23,16 @@ const exitLogin = () => {
 </script>
 
 <template>
-  <div class="header">
+  <div
+    class="header"
+    :style="{
+      width: !theme.showSidebar
+        ? '100vw'
+        : theme.shrinkSidebar
+        ? 'calc(100vw - 64px)'
+        : 'calc(100vw - 200px)',
+    }"
+  >
     <div class="flex between tac head-box">
       <div class="header-left">
         <div class="shrink">
@@ -86,7 +95,9 @@ const exitLogin = () => {
 
 <style lang="scss" scoped>
 .header {
-  height: 100%;
+  z-index: 1;
+  position: fixed;
+  width: 100%;
   padding: 0 20px;
   background-color: $main;
   border-bottom: 1px solid rgba($color: #ffffff, $alpha: 0.2);

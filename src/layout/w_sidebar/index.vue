@@ -27,50 +27,56 @@ onMounted(() => {
 
 <template>
   <div class="sidebar-box" v-if="theme.showSidebar">
-    <div v-if="theme.showLogo" class="logo flex jcenter mb10">
-      <img src="@/assets/SVG/head.svg" alt="" />
-      <span v-if="!theme.shrinkSidebar" :class="['blogName', 'pl10']">{{
-        BlogName + "·ADMIN"
-      }}</span>
-    </div>
-    <el-menu
-      :default-active="menuStore.chooseMenuName"
-      unique-opened
-      class="el-menu-vertical-demo"
-      :background-color="theme.theme.list[theme.themeIndex].bg"
-      :collapse="theme.shrinkSidebar"
-    >
-      <template v-for="item in routes" :key="item.name">
-        <!-- 当子菜单的数目大于1时 -->
-        <el-sub-menu
-          v-if="item.children && (item.children as RouteRecordSingleView[]).length >= 1"
-          :index="item.name"
-        >
-          <template #title>
-            <i class="iconfont icon mr10" v-html="item.meta?.icon"></i>
-            <span>{{ item.meta?.title }}</span>
-          </template>
-          <el-menu-item-group>
-            <template
-              v-for="itm in item.children as RouteRecordSingleView[]"
-              :key="itm.name"
-            >
-              <el-menu-item :index="itm.name">
-                <template #title>
-                  <i class="iconfont icon mr10" v-html="item.meta?.icon"></i>
-                  <span>{{ itm.meta?.title }}</span>
-                </template>
-              </el-menu-item>
+    <div class="fixed">
+      <div v-if="theme.showLogo" class="logo flex jcenter mb10">
+        <img src="@/assets/SVG/head.svg" alt="" />
+        <span v-if="!theme.shrinkSidebar" :class="['blogName', 'pl10']">{{
+          BlogName + "·ADMIN"
+        }}</span>
+      </div>
+      <el-menu
+        :default-active="menuStore.chooseMenuName"
+        :router="true"
+        unique-opened
+        :collapse-transition="false"
+        class="el-menu-vertical-demo"
+        :background-color="theme.theme.list[theme.themeIndex].bg"
+        :collapse="theme.shrinkSidebar"
+        @select="menuStore.chooseRouter"
+      >
+        <template v-for="item in routes" :key="item.name">
+          <!-- 当子菜单的数目大于1时 -->
+          <el-sub-menu
+            v-if="item.children && (item.children as RouteRecordSingleView[]).length >= 1"
+            :index="item.name"
+          >
+            <template #title>
+              <i class="iconfont icon mr10" v-html="item.meta?.icon"></i>
+              <span>{{ item.meta?.title }}</span>
             </template>
-          </el-menu-item-group>
-        </el-sub-menu>
-        <!-- 当子菜单数目小于1时 -->
-        <el-menu-item v-else :index="item.name">
-          <i class="iconfont icon mr10" v-html="item.meta?.icon"></i>
-          <template #title>{{ item.meta?.title }}</template>
-        </el-menu-item>
-      </template>
-    </el-menu>
+            <el-menu-item-group>
+              <template
+                v-for="itm in item.children as RouteRecordSingleView[]"
+                :key="itm.name"
+              >
+                <el-menu-item :index="itm.name">
+                  <template #title>
+                    <i class="iconfont icon mr10" v-html="item.meta?.icon"></i>
+                    <span>{{ itm.meta?.title }}</span>
+                  </template>
+                </el-menu-item>
+              </template>
+            </el-menu-item-group>
+          </el-sub-menu>
+          <!-- 当子菜单数目小于1时 -->
+          <el-menu-item v-else :index="item.name">
+            <i class="iconfont icon mr10" v-html="item.meta?.icon"></i>
+            <template #title>{{ item.meta?.title }}</template>
+          </el-menu-item>
+        </template>
+      </el-menu>
+    </div>
+    <div :style="[{ width: theme.shrinkSidebar ? '64px' : '200px' }]"></div>
   </div>
 </template>
 
@@ -79,8 +85,6 @@ onMounted(() => {
   height: 100%;
   background-color: $main;
   border-right: 1px solid rgba($color: #ffffff, $alpha: 0.2);
-  width: 100%;
-  // box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.12);
   .logo {
     height: 60px;
     width: 100%;

@@ -8,3 +8,8 @@ export interface browsing {
   todayVisitor: number;
   visitorCount: number;
 }
+
+export interface newRegister {
+  pageSize: number;
+  pageNum: number;
+}

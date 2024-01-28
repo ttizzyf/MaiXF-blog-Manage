@@ -36,7 +36,7 @@ const frameIn = [
     children: [
       {
         path: "/home",
-        name: "home",
+        name: "/home",
         component: () => import("@/views/home/index.vue"),
         meta: {
           title: "首页",
@@ -49,7 +49,7 @@ const frameIn = [
       },
       {
         path: "/blog",
-        name: "blog",
+        name: "/blog",
         meta: {
           title: "博客管理",
           hidden: false,
@@ -60,7 +60,7 @@ const frameIn = [
         children: [
           {
             path: "/blog/blogArticle",
-            name: "blogArticle",
+            name: "/blog/blogArticle",
             component: () => import("@/views/blog/blogArticle/index.vue"),
             meta: {
               title: "文章管理",
@@ -72,7 +72,7 @@ const frameIn = [
           },
           {
             path: "/blog/blogComment",
-            name: "blogComment",
+            name: "/blog/blogComment",
             component: () => import("@/views/blog/blogComment/index.vue"),
             meta: {
               title: "文章评论",
@@ -84,7 +84,7 @@ const frameIn = [
           },
           {
             path: "/blog/createBlog",
-            name: "createBlog",
+            name: "/blog/createBlog",
             component: () => import("@/views/blog/createBlog/index.vue"),
             meta: {
               title: "新建博文",
@@ -98,7 +98,7 @@ const frameIn = [
       },
       {
         path: "/message",
-        name: "message",
+        name: "/message",
         component: () => import("@/views/message/index.vue"),
         meta: {
           title: "消息管理",
@@ -111,7 +111,7 @@ const frameIn = [
       },
       {
         path: "/system",
-        name: "system",
+        name: "/system",
         meta: {
           title: "系统管理",
           hidden: false,
@@ -122,7 +122,7 @@ const frameIn = [
         children: [
           {
             path: "/system/user",
-            name: "user",
+            name: "/system/user",
             component: () => import("@/views/system/user/index.vue"),
             meta: {
               title: "用户管理",
@@ -134,7 +134,7 @@ const frameIn = [
           },
           {
             path: "/system/power",
-            name: "power",
+            name: "/system/power",
             component: () => import("@/views/system/power/index.vue"),
             meta: {
               title: "权限管理",
@@ -146,7 +146,7 @@ const frameIn = [
           },
           {
             path: "/system/operate",
-            name: "operate",
+            name: "/system/operate",
             component: () => import("@/views/system/operate/index.vue"),
             meta: {
               title: "操作管理",
