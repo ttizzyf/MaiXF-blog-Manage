@@ -7,6 +7,7 @@ import WHeadMenu from "@/components/WHeadMenu.vue";
 import WThemeDrawer from "@/components/WThemeDrawer.vue";
 import storage from "@/utils/storage.ts";
 import { useRouter } from "vue-router";
+import WBreadcrumb from "@/components/WBreadcrumb.vue";
 import "@/styles/index.scss";
 import "animate.css";
 const theme = themeSetting();
@@ -34,7 +35,7 @@ const exitLogin = () => {
     }"
   >
     <div class="flex between tac head-box">
-      <div class="header-left">
+      <div class="header-left flex jcenter">
         <div class="shrink">
           <el-icon
             v-if="theme.showSidebar"
@@ -55,7 +56,14 @@ const exitLogin = () => {
             </div>
           </el-scrollbar>
         </div>
+        <div
+          v-if="theme.showSidebar && theme.showBread"
+          class="breadcrumnb-box"
+        >
+          <WBreadcrumb></WBreadcrumb>
+        </div>
       </div>
+
       <div class="flex start control-box pointer">
         <el-popover placement="top-start" trigger="hover">
           <template #reference>
@@ -97,6 +105,7 @@ const exitLogin = () => {
 .header {
   z-index: 1;
   position: fixed;
+  height: 64px;
   width: 100%;
   padding: 0 20px;
   background-color: $main;
@@ -107,6 +116,8 @@ const exitLogin = () => {
   .header-left {
     .shrink {
       color: $main;
+      display: flex;
+      align-items: center;
     }
     .un-shrink-menu {
       .logo-box {
@@ -121,6 +132,9 @@ const exitLogin = () => {
           color: $seconed;
         }
       }
+    }
+    .breadcrumnb-box {
+      margin-left: 20px;
     }
   }
 

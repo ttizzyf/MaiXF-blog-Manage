@@ -2,7 +2,6 @@
 import WHeader from "./w_header/index.vue";
 import WMain from "./w_main/index.vue";
 import WSidebar from "./w_sidebar/index.vue";
-import WBreadcrumb from "@/components/WBreadcrumb.vue";
 import "@/styles/index.scss";
 </script>
 
@@ -17,8 +16,6 @@ import "@/styles/index.scss";
           </div>
         </el-header>
         <el-main>
-          <!-- 面包屑 -->
-          <WBreadcrumb></WBreadcrumb>
           <WMain></WMain>
         </el-main>
       </el-container>

@@ -47,7 +47,7 @@ export const themeSetting = defineStore("themeSetting", () => {
   // 收缩侧边栏-
   const shrinkSidebar = ref(true);
   // 是否展示面包屑
-  const showBread = ref(true);
+  const showBread = ref(false);
   // 是否展示LOGO
   const showLogo = ref(true);
 

@@ -74,7 +74,7 @@ export const useBreadcrumb = defineStore("useBreadcrumb", () => {
     if (item.path === "/home") return;
     tabsList.value.push(item);
     tabsList.value = uniquePaths(tabsList.value);
-    console.log(tabsList.value);
+    current.value = item.path;
     storage.set("tabs", tabsList.value);
   }
   // 设置当前选中的 tab
