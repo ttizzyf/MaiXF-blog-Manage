@@ -123,6 +123,9 @@
 .w300 {
   width: 300px;
 }
+.h16 {
+  height: 16px;
+}
 .h32 {
   height: 32px;
 }
@@ -207,6 +210,12 @@
 }
 .flex1 {
   flex: 1;
+}
+.shrink0 {
+  flex-shrink: 0;
+}
+.end {
+  justify-content: end;
 }
 .caps {
   text-transform: uppercase;

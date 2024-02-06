@@ -20,8 +20,7 @@ export const themeSetting = defineStore("themeSetting", () => {
   };
   // 主题索引
   const themeIndex = ref(0);
-  const ChangeColor = (index: number | undefined) => {
-    console.log(index);
+  const ChangeColor = (index: number | null = null) => {
     let colorGroup;
     if (typeof index === "number" || index === 0) {
     } else {

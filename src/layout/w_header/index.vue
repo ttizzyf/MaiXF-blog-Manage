@@ -103,7 +103,7 @@ const exitLogin = () => {
 
 <style lang="scss" scoped>
 .header {
-  z-index: 1;
+  z-index: 2000;
   position: fixed;
   height: 64px;
   width: 100%;
