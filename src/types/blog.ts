@@ -10,7 +10,7 @@ export interface blogArticleType {
 
 // 更新博客文章
 export interface updateArticleType {
-  id: string;
+  id?: string;
   title?: string;
   cover?: string;
   abstract?: string;
@@ -31,4 +31,11 @@ export interface blogParamType extends updateArticleType {
   viewNum?: number;
   likeNum?: number;
   [key: string]: any;
+}
+
+// 获取文章评论参数
+export interface getArticleCommentType {
+  pageNum: number;
+  pageSize: number;
+  comment: string | null;
 }

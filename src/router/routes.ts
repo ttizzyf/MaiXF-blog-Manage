@@ -83,11 +83,11 @@ const frameIn = [
             },
           },
           {
-            path: "/blog/createBlog",
-            name: "/blog/createBlog",
-            component: () => import("@/views/blog/createBlog/index.vue"),
+            path: "/blog/createMessage",
+            name: "/blog/createMessage",
+            component: () => import("@/views/blog/createMessage/index.vue"),
             meta: {
-              title: "新建博文",
+              title: "留言管理",
               hidden: false,
               icon: "&#xe643;",
               link: false,

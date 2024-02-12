@@ -1,6 +1,8 @@
 import axios, { ResponseType, AxiosRequestConfig } from "axios";
 import Storage from "../utils/storage.ts";
 import { WNotification } from "./toast.ts";
+import storage from "../utils/storage.ts";
+import router from "@/router";
 
 const Request = axios.create({
   // 基础路径到代理服务器被转换
@@ -13,6 +15,8 @@ Request.interceptors.request.use(
     let userInfo = Storage.get("userInfo");
     if (userInfo?.token) {
       config.headers.authorization = userInfo.token;
+    } else {
+      router.push("/login");
     }
     return config;
   },
@@ -46,13 +50,15 @@ const errorHandler = (error: any) => {
     let status = error.response.status;
     // 响应数据
     let data = error.response.data;
+    console.log(status);
     switch (status) {
       case 400:
         // console.error("参数校验失败" + data.message);
         WNotification.error(data.message || "参数校验失败");
         return Promise.reject(data.message ?? "参数校验失败");
       case 401:
-        // console.error("未授权" + data.message);
+        router.push("/login");
+        storage.remove("userInfo");
         WNotification.error(data.message || "未授权");
         return Promise.reject(data.message ?? "未授权");
       case 404:

@@ -1,5 +1,9 @@
 import request from "utils/request.ts";
-import { blogArticleType, updateArticleType } from "@/types/blog.ts";
+import {
+  blogArticleType,
+  updateArticleType,
+  getArticleCommentType,
+} from "@/types/blog.ts";
 import { responseData } from "@/types/userInfo";
 // 获取文章列表
 export const getBlogArticleList = (params: blogArticleType) => {
@@ -16,4 +20,13 @@ export const getArticleDetails = (data: { id: string }) => {
 // 删除博文
 export const deleteArticle = (data: { id: string }) => {
   return request.post<responseData>("/w1/blog/blog_article/delete", data);
+};
+// 新建博文
+export const newCreateArticle = (data: updateArticleType) => {
+  return request.post<responseData>("/w1/blog/blog_article/create", data);
+};
+
+//获取文章评论列表
+export const getBlogCommentList = (params: getArticleCommentType) => {
+  return request.get<responseData>("/w1/blog/blog_comment/list", params);
 };

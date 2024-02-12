@@ -3,9 +3,11 @@ import WmdEdit from "@/components/WmdEdit.vue";
 import "@/styles/index.scss";
 import { useArticleStore } from "@/store/article.ts";
 import { themeSetting } from "@/store/theme.ts";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import storage from "@/utils/storage";
-import { WNotification } from "@/utils/toast";
+import { WNotification, WMessage } from "@/utils/toast";
+import { newCreateArticle, updateArticle } from "@/api/blog.ts";
+import type { UploadUserFile } from "element-plus";
 
 const headers = {
   authorization: storage.get("userInfo").token,
@@ -39,21 +41,79 @@ const uploadCoverSuccess = (file: any) => {
   articleStore.editArticleData.cover = file.data.fileUrl;
   articleStore.imagesPreviewList.splice(0, 1);
   articleStore.imagesPreviewList.push(file.data.fileUrl as never);
+  fileList.value = [];
 };
 
 // 上传封面失败
 const uploadCoverError = () => {
   WNotification.error("上传封面失败");
+  fileList.value = [];
 };
 
+// 上传封面列表
+const fileList = ref<UploadUserFile[]>([]);
+// 确认退出弹层控制
 const isShowDialog = ref(false);
-
+// 表单元素dom
+const formDom = ref();
+// 确认退出处理
 const confirmExit = () => {
   articleStore.clearArticleData();
   articleStore.imagesPreviewList = [];
+  articleStore.isAllowSave = false;
   articleStore.isWriteArticle = false;
   isShowDialog.value = false;
+  formDom.value.resetFields();
 };
+
+const btnOk = async () => {
+  articleStore.isAllowSave = true;
+  if (!formDom.value) return;
+  await formDom.value.validate(async (valid: Boolean, fields: any) => {
+    if (valid) {
+      if (articleStore.editArticleData.id) {
+        // 编辑文章
+        const res = await updateArticle(articleStore.editArticleData);
+        console.log(res);
+        if (res.data.status === 1) {
+          WMessage.success(res.data.message);
+          setTimeout(() => {
+            confirmExit();
+          }, 1000);
+        } else {
+          WMessage.error("更新文章失败,请稍后再试");
+        }
+      } else {
+        // 新增文章
+        const res = await newCreateArticle(articleStore.editArticleData);
+        if (res.data.status === 1) {
+          WMessage.success(res.data.message);
+          setTimeout(() => {
+            confirmExit();
+          }, 1000);
+        } else {
+          WMessage.error("新建文章失败,请稍后再试");
+        }
+      }
+    } else {
+      let firstKey = Object.keys(fields)[0];
+      let message = fields[firstKey][0].message;
+      articleStore.isAllowSave = false;
+      WMessage.error(message);
+    }
+  });
+};
+
+// 当改变文章为原创时
+watch(
+  () => articleStore.editArticleData.isReship,
+  () => {
+    if (articleStore.editArticleData.isReship === 2) {
+      articleStore.editArticleData.isReshipName = "";
+      articleStore.editArticleData.isReshipUrl = "";
+    }
+  }
+);
 </script>
 
 <template>
@@ -70,8 +130,10 @@ const confirmExit = () => {
       :model="articleStore.editArticleData"
       label-width="100px"
       label-position="right"
+      :rules="articleStore.rules"
+      ref="formDom"
     >
-      <el-form-item label="标题:">
+      <el-form-item label="标题:" prop="title">
         <el-input
           style="width: 50%"
           type="text"
@@ -81,7 +143,7 @@ const confirmExit = () => {
           clearable
         ></el-input>
       </el-form-item>
-      <el-form-item label="内容:">
+      <el-form-item label="内容:" prop="content">
         <div class="w100">
           <WmdEdit></WmdEdit>
           <el-upload
@@ -110,13 +172,18 @@ const confirmExit = () => {
             :max-scale="7"
             :min-scale="2"
             :src="articleStore.editArticleData.cover"
-            :preview-src-list="articleStore.imagesPreviewList"
+            :preview-src-list="
+              articleStore.imagesPreviewList.length >= 1
+                ? articleStore.imagesPreviewList
+                : articleStore.defaultImagesPreviewList
+            "
             :initial-index="0"
             fit="cover"
           />
         </div>
         <el-upload
           class="mt20"
+          v-model:file-list="fileList"
           :headers="headers"
           accept=".jpg,.jpeg,.png,.image"
           @success="uploadCoverSuccess"
@@ -159,7 +226,7 @@ const confirmExit = () => {
           maxlength="100"
         ></el-input>
       </el-form-item>
-      <el-form-item label="分类:">
+      <el-form-item label="分类:" prop="category">
         <el-select
           v-model="articleStore.editArticleData.category"
           class="m-2"
@@ -243,7 +310,10 @@ const confirmExit = () => {
     </el-form>
     <el-divider class="mt20" />
     <div class="flex jcenter">
-      <el-button :color="theme.theme.list[theme.themeIndex].primary"
+      <el-button
+        @click="btnOk"
+        :disabled="articleStore.isAllowSave"
+        :color="theme.theme.list[theme.themeIndex].primary"
         ><span
           :style="{
             color: theme.theme.list[theme.themeIndex].text,
@@ -269,12 +339,14 @@ const confirmExit = () => {
       博文数据暂未保存,请确认是否关闭退出
       <template #footer>
         <div class="flex end">
-          <el-button :color="theme.theme.list[theme.themeIndex].primary">
+          <el-button
+            @click="confirmExit"
+            :color="theme.theme.list[theme.themeIndex].primary"
+          >
             <span
               :style="{
                 color: theme.theme.list[theme.themeIndex].text,
               }"
-              @click="confirmExit"
               >确认</span
             >
           </el-button>

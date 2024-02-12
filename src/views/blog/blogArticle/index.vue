@@ -5,7 +5,7 @@ import {
   getArticleDetails,
   deleteArticle,
 } from "api/blog.ts";
-import { ref, onMounted, watch, reactive, Ref } from "vue";
+import { ref, watch, reactive, Ref } from "vue";
 import { blogArticleType, blogParamType } from "@/types/blog";
 import { themeSetting } from "@/store/theme";
 import { Search } from "@element-plus/icons-vue";
@@ -65,6 +65,17 @@ watch(
   { immediate: true, deep: true }
 );
 
+// 当编辑完成回来之后重新刷新
+watch(
+  () => articleStore.isWriteArticle,
+  () => {
+    if (!articleStore.isWriteArticle) {
+      getBlogArticleListAPI();
+    }
+  },
+  { deep: true }
+);
+
 // 编辑文章
 const editArticle = async (id: string) => {
   articleStore.isWriteArticle = true;
@@ -122,8 +133,6 @@ const refreshArticleList = () => {
   blogArticleList.value = [];
   getBlogArticleListAPI();
 };
-
-onMounted(() => {});
 </script>
 
 <template>
@@ -390,7 +399,7 @@ onMounted(() => {});
             >
               <template #default="{ row }">
                 <div>
-                  {{ dayjs(row.createdAt).format("YYYY-MM-DD HH-mm-ss") }}
+                  {{ dayjs(row.createdAt).format("YYYY-MM-DD HH:mm:ss") }}
                 </div>
               </template>
             </el-table-column>
