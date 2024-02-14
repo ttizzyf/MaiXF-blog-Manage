@@ -3,6 +3,7 @@ import {
   blogArticleType,
   updateArticleType,
   getArticleCommentType,
+  articleLikeType,
 } from "@/types/blog.ts";
 import { responseData } from "@/types/userInfo";
 // 获取文章列表
@@ -29,4 +30,12 @@ export const newCreateArticle = (data: updateArticleType) => {
 //获取文章评论列表
 export const getBlogCommentList = (params: getArticleCommentType) => {
   return request.get<responseData>("/w1/blog/blog_comment/list", params);
+};
+// 文章评论点赞或反对
+export const updateBlogCommentLikeOrOppose = (data: articleLikeType) => {
+  return request.post<responseData>("/w1/blog/blog_comment/likeOrOppose", data);
+};
+// 获取文章列表
+export const getArticleSelectList = () => {
+  return request.get<responseData>("/w1/blog/blog_article/selectList");
 };

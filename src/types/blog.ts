@@ -39,3 +39,13 @@ export interface getArticleCommentType {
   pageSize: number;
   comment: string | null;
 }
+// 文章点赞或者反对
+export interface articleLikeType {
+  id: string;
+  likeOrOppose: string;
+}
+// 文章下拉列表
+export interface articleSelect {
+  id: string;
+  title: string;
+}

@@ -364,5 +364,10 @@ watch(
     border-color: $primary;
     background-color: #ffffff;
   }
+  .el-button:focus {
+    color: $primary;
+    border-color: $primary;
+    background-color: #ffffff;
+  }
 }
 </style>

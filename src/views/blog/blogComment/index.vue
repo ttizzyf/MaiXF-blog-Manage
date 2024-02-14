@@ -1,10 +1,17 @@
 <script lang="ts" setup>
-import { reactive, ref, watch } from "vue";
+import { reactive, ref, watch, onMounted, Ref } from "vue";
 import "@/styles/index.scss";
 import { Search } from "@element-plus/icons-vue";
 import { themeSetting } from "@/store/theme";
-import { getBlogCommentList } from "@/api/blog.ts";
+import {
+  getBlogCommentList,
+  updateBlogCommentLikeOrOppose,
+  getArticleSelectList,
+} from "@/api/blog.ts";
 import { getArticleCommentType } from "@/types/blog.ts";
+import WComment from "@/components/WComment.vue";
+import { setCookie } from "@/utils/cookies.ts";
+import { articleSelect } from "@/types/blog.ts";
 
 const theme = themeSetting();
 // 搜索博客评论参数
@@ -16,15 +23,16 @@ const commentParams: getArticleCommentType = reactive({
 // 搜索栏值
 const searchInput = ref();
 
-const commentTotal = ref("24");
+const commentTotal = ref();
 
-const commentList = ref([]);
+const commentList: any = ref([]);
 
 // 获取文章评论列表
 const getBlogCommentListAPI = async () => {
   const res = await getBlogCommentList(commentParams);
-  console.log(res);
-  commentList.value = res.data.data;
+  commentTotal.value = res.data.data.count;
+  commentList.value = res.data.data.data;
+  console.log(commentList.value);
 };
 
 watch(
@@ -34,11 +42,79 @@ watch(
   },
   { immediate: true, deep: true }
 );
-
+// 输入框值改变
 const commentChange = () => {
   commentParams.comment = searchInput.value;
   console.log(commentParams);
 };
+// 提交点赞消息
+const submitLikeMessages = (id: string) => {
+  updateBlogCommentLikeOrOppose({ id, likeOrOppose: "like" }).then((res) => {
+    if (res.data.status) {
+      setCookie(`comment-like-${id}`, true, 30);
+      getBlogCommentListAPI();
+    }
+  });
+};
+// 提交反对消息
+const submitOpposeMessages = (id: string) => {
+  updateBlogCommentLikeOrOppose({ id, likeOrOppose: "Oppose" }).then((res) => {
+    if (res.data.status) {
+      setCookie(`comment-oppose-${id}`, true, 30);
+      getBlogCommentListAPI();
+    }
+  });
+};
+
+const submitReplyMessages = () => {};
+
+// 修改评论
+const submitModifyMessages = (message: any) => {
+  dialogData.value.articleId = message.articleInfo.id;
+  dialogData.value.content = message.content;
+  dialogController.value = true;
+};
+
+// 弹层控制
+const dialogController = ref(false);
+
+// 修改和新建评论的表单
+const dialogData = ref({
+  articleId: "",
+  messageId: "",
+  content: "",
+});
+
+// 修改和新建评论的规则
+const messageRules = reactive({
+  articleId: [{ required: true, message: "请选择文章", trigger: "blur" }],
+  content: [{ required: true, message: "评论内容不能为空", trigger: "blur" }],
+});
+
+// 关闭弹层
+const closeDialog = () => {
+  dialogController.value = false;
+  messageFormDom.value.resetFields();
+};
+
+// 弹层表单DOM
+const messageFormDom = ref();
+
+// 文章下拉列表
+const articleSelectList: Ref<Array<articleSelect>> = ref([]);
+// 获取文章下拉列表
+const getArticleSelectListAPI = async () => {
+  const res = await getArticleSelectList();
+  articleSelectList.value = res.data.data;
+};
+
+const demo = (e: any) => {
+  console.log(e);
+};
+
+onMounted(() => {
+  getArticleSelectListAPI();
+});
 </script>
 
 <template>
@@ -72,7 +148,10 @@ const commentChange = () => {
               content="新增博文"
               placement="top"
             >
-              <el-button :color="theme.theme.list[theme.themeIndex].primary">
+              <el-button
+                @click="dialogController = true"
+                :color="theme.theme.list[theme.themeIndex].primary"
+              >
                 <el-space wrap>
                   <i
                     class="iconfont"
@@ -95,8 +174,19 @@ const commentChange = () => {
       </el-scrollbar>
     </el-card>
     <div class="mt20 text-seconed caps">
-      共有<span class="text-primary fz24">24</span>条评论
+      共有<span class="text-primary fz24">{{ commentTotal }}</span
+      >条评论
     </div>
+    <WComment
+      v-for="item in commentList"
+      :key="item.messageId"
+      :comment="item"
+      @like="submitLikeMessages"
+      @oppose="submitOpposeMessages"
+      @reply="submitReplyMessages"
+      @modify="submitModifyMessages"
+    >
+    </WComment>
     <div class="flex end mt10">
       <el-pagination
         small
@@ -108,6 +198,60 @@ const commentChange = () => {
         class="mt-4"
       />
     </div>
+    <el-dialog
+      v-model="dialogController"
+      :title="
+        dialogController && dialogData.messageId ? '编辑评论' : '添加评论'
+      "
+      :close-on-click-modal="false"
+      @close="closeDialog"
+      width="40%"
+    >
+      <el-form
+        :model="dialogData"
+        :rules="messageRules"
+        ref="messageFormDom"
+        label-width="80px"
+        label-position="right"
+      >
+        <el-form-item label="留言内容" prop="content">
+          <el-input
+            type="textarea"
+            placeholder="请输入评论内容"
+            v-model="dialogData.content"
+            :row="3"
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item label="文章" prop="articleId">
+          <el-select
+            @change="demo"
+            clearable
+            v-model="dialogData.articleId"
+            placeholder="请选择文章"
+          >
+            <el-option
+              v-for="item in articleSelectList"
+              :label="item.title"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            :style="{
+              color: theme.theme.list[theme.themeIndex].text,
+            }"
+            :color="theme.theme.list[theme.themeIndex].primary"
+            >保存</el-button
+          >
+          <div class="cancle-btn ml20">
+            <el-button @click="closeDialog">取消</el-button>
+          </div>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -118,5 +262,17 @@ const commentChange = () => {
 }
 :deep(.el-pager li:hover) {
   color: $primary;
+}
+.cancle-btn {
+  .el-button:hover {
+    color: $primary;
+    border-color: $primary;
+    background-color: #ffffff;
+  }
+  .el-button:focus {
+    color: $primary;
+    border-color: $primary;
+    background-color: #ffffff;
+  }
 }
 </style>
