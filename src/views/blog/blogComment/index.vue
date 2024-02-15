@@ -7,11 +7,14 @@ import {
   getBlogCommentList,
   updateBlogCommentLikeOrOppose,
   getArticleSelectList,
+  newCreateComment,
+  updateComment,
 } from "@/api/blog.ts";
 import { getArticleCommentType } from "@/types/blog.ts";
 import WComment from "@/components/WComment.vue";
 import { setCookie } from "@/utils/cookies.ts";
 import { articleSelect } from "@/types/blog.ts";
+import { WNotification } from "@/utils/toast";
 
 const theme = themeSetting();
 // 搜索博客评论参数
@@ -70,8 +73,10 @@ const submitReplyMessages = () => {};
 
 // 修改评论
 const submitModifyMessages = (message: any) => {
-  dialogData.value.articleId = message.articleInfo.id;
+  console.log(message);
+  // dialogData.value.relatedArticleId = message.articleInfo.id;
   dialogData.value.content = message.content;
+  dialogData.value.messageId = message.messageId;
   dialogController.value = true;
 };
 
@@ -80,20 +85,27 @@ const dialogController = ref(false);
 
 // 修改和新建评论的表单
 const dialogData = ref({
-  articleId: "",
+  relatedArticleId: "",
   messageId: "",
   content: "",
 });
 
 // 修改和新建评论的规则
 const messageRules = reactive({
-  articleId: [{ required: true, message: "请选择文章", trigger: "blur" }],
+  relatedArticleId: [
+    { required: true, message: "请选择文章", trigger: "blur" },
+  ],
   content: [{ required: true, message: "评论内容不能为空", trigger: "blur" }],
 });
 
 // 关闭弹层
 const closeDialog = () => {
   dialogController.value = false;
+  dialogData.value = {
+    relatedArticleId: "",
+    messageId: "",
+    content: "",
+  };
   messageFormDom.value.resetFields();
 };
 
@@ -108,8 +120,26 @@ const getArticleSelectListAPI = async () => {
   articleSelectList.value = res.data.data;
 };
 
-const demo = (e: any) => {
-  console.log(e);
+// 新增文章评论或留言
+const submitCreateComment = async () => {
+  if (!dialogData.value.messageId) {
+    // 新增留言或评论
+    const res = await newCreateComment(dialogData.value);
+
+    if (res.data.status) {
+      WNotification.success(res.data.message);
+      getBlogCommentListAPI();
+    }
+  } else {
+    // 修改留言或评论
+    const res = await updateComment(dialogData.value);
+    console.log(res);
+    if (res.data.status) {
+      WNotification.success(res.data.message);
+      getBlogCommentListAPI();
+    }
+  }
+  closeDialog();
 };
 
 onMounted(() => {
@@ -173,7 +203,7 @@ onMounted(() => {
         </div>
       </el-scrollbar>
     </el-card>
-    <div class="mt20 text-seconed caps">
+    <div class="mt20 text-seconed caps mb20">
       共有<span class="text-primary fz24">{{ commentTotal }}</span
       >条评论
     </div>
@@ -223,11 +253,10 @@ onMounted(() => {
           >
           </el-input>
         </el-form-item>
-        <el-form-item label="文章" prop="articleId">
+        <el-form-item label="文章" prop="relatedArticleId">
           <el-select
-            @change="demo"
             clearable
-            v-model="dialogData.articleId"
+            v-model="dialogData.relatedArticleId"
             placeholder="请选择文章"
           >
             <el-option
@@ -240,6 +269,7 @@ onMounted(() => {
         </el-form-item>
         <el-form-item>
           <el-button
+            @click="submitCreateComment"
             :style="{
               color: theme.theme.list[theme.themeIndex].text,
             }"

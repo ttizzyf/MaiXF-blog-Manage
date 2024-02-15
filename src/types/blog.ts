@@ -49,3 +49,17 @@ export interface articleSelect {
   id: string;
   title: string;
 }
+// 新增留言或评论
+export interface newCreateCommentType {
+  messagePid?: string | null;
+  toUserId?: string | null;
+  relatedArticleId?: string | null;
+  content: string;
+}
+// 修改留言或评论及删除
+export interface updateCommentType {
+  messageId: string | null;
+  relatedArticleId: string | null;
+  content: string;
+  hidden?: number;
+}

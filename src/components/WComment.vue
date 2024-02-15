@@ -105,9 +105,7 @@ const modifyMessage = (message: any) => {
               {{ item.userInfo.nickname }}@{{ item.toUserInfo.nickname }}
             </span>
             <div class="fz12 textColor">
-              在{{
-                dayjs(item.userInfo.createdAt).format("YYYY-MM-DD HH:mm:ss")
-              }}说
+              在{{ dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss") }}说
             </div>
           </div>
           <div>
@@ -135,7 +133,7 @@ const modifyMessage = (message: any) => {
             >
               反对({{ item.opposeNum || 0 }})
             </span>
-            <span> 修改 </span>
+            <span @click="modifyMessage(item)"> 修改 </span>
             <span> 删除 </span>
           </div>
         </div>
