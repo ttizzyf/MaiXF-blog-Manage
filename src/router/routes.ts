@@ -83,9 +83,9 @@ const frameIn = [
             },
           },
           {
-            path: "/blog/createMessage",
-            name: "/blog/createMessage",
-            component: () => import("@/views/blog/createMessage/index.vue"),
+            path: "/blog/manageMessage",
+            name: "/blog/manageMessage",
+            component: () => import("@/views/blog/manageMessage/index.vue"),
             meta: {
               title: "留言管理",
               hidden: false,

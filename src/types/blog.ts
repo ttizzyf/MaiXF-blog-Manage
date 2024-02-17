@@ -59,7 +59,7 @@ export interface newCreateCommentType {
 // 修改留言或评论及删除
 export interface updateCommentType {
   messageId: string | null;
-  relatedArticleId: string | null;
+  relatedArticleId?: string | null;
   content: string;
   hidden?: number;
 }

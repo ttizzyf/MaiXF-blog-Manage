@@ -1,130 +1,110 @@
 <script lang="ts" setup>
-import { reactive, ref, watch, onMounted, Ref } from "vue";
 import "@/styles/index.scss";
-import { Search } from "@element-plus/icons-vue";
-import { themeSetting } from "@/store/theme";
+import { reactive, ref, watch } from "vue";
 import {
-  getBlogCommentList,
-  updateBlogCommentLikeOrOppose,
-  getArticleSelectList,
+  getManageMessageList,
   newCreateComment,
+  updateBlogCommentLikeOrOppose,
   updateComment,
   deleteComment,
 } from "@/api/blog.ts";
-import { getArticleCommentType } from "@/types/blog.ts";
+import { Search } from "@element-plus/icons-vue";
 import WComment from "@/components/WComment.vue";
+import { getArticleCommentType } from "@/types/blog.ts";
+import { themeSetting } from "@/store/theme";
 import { setCookie } from "@/utils/cookies.ts";
-import { articleSelect } from "@/types/blog.ts";
 import { WNotification } from "@/utils/toast";
-
 const theme = themeSetting();
-// 搜索博客评论参数
+// 搜索栏值
+const searchInput = ref();
+// 搜索留言参数
 const commentParams: getArticleCommentType = reactive({
   pageNum: 1,
   pageSize: 10,
   comment: "",
 });
-// 搜索栏值
-const searchInput = ref();
-
+// 留言总数
 const commentTotal = ref();
 
-const commentList: any = ref([]);
+const manageMessageList: any = ref([]);
 
-// 获取文章评论列表
-const getBlogCommentListAPI = async () => {
-  const res = await getBlogCommentList(commentParams);
-  commentTotal.value = res.data.data.count;
-  commentList.value = res.data.data.data;
-  console.log(commentList.value);
-};
-
-watch(
-  () => commentParams,
-  () => {
-    getBlogCommentListAPI();
-  },
-  { immediate: true, deep: true }
-);
 // 输入框值改变
 const commentChange = () => {
   commentParams.pageNum = 1;
   commentParams.comment = searchInput.value;
   console.log(commentParams);
 };
+
+// 获取文章评论列表
+const getManageMessageListAPI = async () => {
+  const res = await getManageMessageList(commentParams);
+  commentTotal.value = res.data.data.count;
+  manageMessageList.value = res.data.data.data;
+  console.log(manageMessageList.value);
+};
+
+watch(
+  () => commentParams,
+  () => {
+    getManageMessageListAPI();
+  },
+  { immediate: true, deep: true }
+);
+
+// 回复留言
+const submitReplyMessage = async (info: any) => {
+  const res = await newCreateComment(info);
+  if (res.data.status) {
+    WNotification.success("回复成功");
+    getManageMessageListAPI();
+  }
+};
+
 // 提交点赞消息
 const submitLikeMessages = (id: string) => {
   updateBlogCommentLikeOrOppose({ id, likeOrOppose: "like" }).then((res) => {
     if (res.data.status) {
       setCookie(`comment-like-${id}`, true, 30);
-      getBlogCommentListAPI();
+      getManageMessageListAPI();
     }
   });
 };
+
 // 提交反对消息
 const submitOpposeMessages = (id: string) => {
   updateBlogCommentLikeOrOppose({ id, likeOrOppose: "Oppose" }).then((res) => {
     if (res.data.status) {
       setCookie(`comment-oppose-${id}`, true, 30);
-      getBlogCommentListAPI();
+      getManageMessageListAPI();
     }
   });
 };
 
-// 修改评论
-const submitModifyMessages = (message: any) => {
-  if (message.messagePid) {
-    isReply.value = true;
-  } else {
-    dialogData.value.relatedArticleId = message.articleInfo.id;
-  }
-  dialogData.value.content = message.content;
-  dialogData.value.messageId = message.messageId;
-  dialogController.value = true;
-};
-
-// 弹层控制
-const dialogController = ref(false);
-
 // 修改和新建评论的表单
 const dialogData = ref({
-  relatedArticleId: "",
   messageId: "",
   content: "",
 });
 
 // 修改和新建评论的规则
 const messageRules = reactive({
-  relatedArticleId: [
-    { required: true, message: "请选择文章", trigger: "blur" },
-  ],
   content: [{ required: true, message: "评论内容不能为空", trigger: "blur" }],
 });
+
+// 弹层控制
+const dialogController = ref(false);
 
 // 关闭弹层
 const closeDialog = () => {
   dialogController.value = false;
-  isReply.value = false;
   dialogData.value = {
-    relatedArticleId: "",
     messageId: "",
     content: "",
   };
   messageFormDom.value.resetFields();
 };
 
-const isReply = ref(false);
-
-// 弹层表单DOM
 const messageFormDom = ref();
-
-// 文章下拉列表
-const articleSelectList: Ref<Array<articleSelect>> = ref([]);
-// 获取文章下拉列表
-const getArticleSelectListAPI = async () => {
-  const res = await getArticleSelectList();
-  articleSelectList.value = res.data.data;
-};
 
 // 新增文章评论或留言
 const submitCreateComment = async () => {
@@ -133,7 +113,7 @@ const submitCreateComment = async () => {
     const res = await newCreateComment(dialogData.value);
     if (res.data.status) {
       WNotification.success(res.data.message);
-      getBlogCommentListAPI();
+      getManageMessageListAPI();
     }
   } else {
     // 修改留言或评论
@@ -141,10 +121,17 @@ const submitCreateComment = async () => {
     console.log(res);
     if (res.data.status) {
       WNotification.success(res.data.message);
-      getBlogCommentListAPI();
+      getManageMessageListAPI();
     }
   }
   closeDialog();
+};
+
+// 修改评论
+const submitModifyMessages = (message: any) => {
+  dialogData.value.content = message.content;
+  dialogData.value.messageId = message.messageId;
+  dialogController.value = true;
 };
 
 // 删除留言或评论
@@ -161,24 +148,20 @@ const submitDeleteMessages = async (id: string) => {
         commentParams.pageNum--;
       }
     }
-    getBlogCommentListAPI();
+    getManageMessageListAPI();
   }
 };
-
-onMounted(() => {
-  getArticleSelectListAPI();
-});
 </script>
 
 <template>
-  <div class="comment-box">
+  <div class="manage-message-box">
     <el-card shadow="hover">
       <el-scrollbar>
         <div class="flex between pb5">
           <div class="shrink0">
             <el-input
               class="w-50 m-2"
-              placeholder="请输入评论内容"
+              placeholder="请输入留言内容"
               :prefix-icon="Search"
               v-model="searchInput"
               @blur="commentChange"
@@ -191,14 +174,14 @@ onMounted(() => {
               content="刷新"
               placement="top"
             >
-              <el-button color="#40485b" @click="getBlogCommentListAPI"
+              <el-button color="#40485b" @click="getManageMessageListAPI"
                 ><i class="iconfont">&#xe631;</i></el-button
               >
             </el-tooltip>
             <el-tooltip
               class="box-item"
               effect="dark"
-              content="新增评论"
+              content="我要留言"
               placement="top"
             >
               <el-button
@@ -211,14 +194,14 @@ onMounted(() => {
                     :style="{
                       color: theme.theme.list[theme.themeIndex].text,
                     }"
-                    >&#xe620;</i
+                    >&#xe743;</i
                   >
                 </el-space>
                 <span
                   :style="{
                     color: theme.theme.list[theme.themeIndex].text,
                   }"
-                  >评论</span
+                  >留言</span
                 >
               </el-button>
             </el-tooltip>
@@ -227,16 +210,18 @@ onMounted(() => {
       </el-scrollbar>
     </el-card>
     <div class="mt20 text-seconed caps mb20">
+      <p class="text-seconed">欢迎点击右上角留言按钮进行留言!</p>
       共有<span class="text-primary fz24">{{ commentTotal }}</span
-      >条评论
+      >条留言
     </div>
     <WComment
-      v-for="item in commentList"
+      v-for="item in manageMessageList"
       :key="item.messageId"
       :comment="item"
+      @reply="submitReplyMessage"
       @like="submitLikeMessages"
-      @oppose="submitOpposeMessages"
       @modify="submitModifyMessages"
+      @oppose="submitOpposeMessages"
       @delete="submitDeleteMessages"
     >
     </WComment>
@@ -272,23 +257,9 @@ onMounted(() => {
             type="textarea"
             placeholder="请输入评论内容"
             v-model="dialogData.content"
-            :row="3"
+            :rows="4"
           >
           </el-input>
-        </el-form-item>
-        <el-form-item v-if="!isReply" label="文章" prop="relatedArticleId">
-          <el-select
-            clearable
-            v-model="dialogData.relatedArticleId"
-            placeholder="请选择文章"
-          >
-            <el-option
-              v-for="item in articleSelectList"
-              :label="item.title"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button

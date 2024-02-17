@@ -115,13 +115,13 @@
   width: 100%;
 }
 .w120 {
-  width: 120px;
+  width: 120px !important;
 }
 .w144 {
   width: 144px;
 }
 .w200 {
-  width: 200px;
+  width: 200px !important;
 }
 .w300 {
   width: 300px;
@@ -354,6 +354,19 @@
   transition: all 0.3s ease;
   &:hover {
     transform: translateY(-4px) scale(1.02);
+  }
+}
+
+.cancle-btn {
+  .el-button:hover {
+    color: $primary;
+    border-color: $primary;
+    background-color: #ffffff;
+  }
+  .el-button:focus {
+    color: $primary;
+    border-color: $primary;
+    background-color: #ffffff;
   }
 }
 

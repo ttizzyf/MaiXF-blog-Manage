@@ -45,7 +45,15 @@ export const getArticleSelectList = () => {
 export const newCreateComment = (data: newCreateCommentType) => {
   return request.post<responseData>("/w1/blog/blog_comment/create", data);
 };
-// 修改留言或评论及删除
+// 修改留言或评论
 export const updateComment = (data: updateCommentType) => {
   return request.post<responseData>("/w1/blog/blog_comment/update", data);
+};
+// 删除留言或评论
+export const deleteComment = (data: { messageId: string }) => {
+  return request.post<responseData>("/w1/blog/blog_comment/delete", data);
+};
+// 获取留言列表
+export const getManageMessageList = (params: blogArticleType) => {
+  return request.get<responseData>("/w1/blog/manage_message/list", params);
 };

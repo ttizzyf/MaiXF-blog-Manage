@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import "@/styles/index.scss";
 import dayjs from "dayjs";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { getCookie } from "@/utils/cookies.ts";
+import { InfoFilled } from "@element-plus/icons-vue";
+import { themeSetting } from "@/store/theme";
+import { WMessage } from "@/utils/toast";
+const theme = themeSetting();
 const props = defineProps({
   comment: {
     type: Object,
@@ -10,6 +14,8 @@ const props = defineProps({
     default: () => [],
   },
 });
+// 展示列表
+const srcList = ref([]);
 
 const state = reactive({
   show: {
@@ -19,7 +25,7 @@ const state = reactive({
   opposeActive: (messageId: string) => getCookie(`comment-oppose-${messageId}`),
 });
 
-const emits = defineEmits(["modify", "like", "oppose"]);
+const emits = defineEmits(["modify", "like", "oppose", "delete", "reply"]);
 // 喜欢
 const likeComment = (id: string) => {
   if (state.likeActive(id)) return;
@@ -32,20 +38,79 @@ const opposeComment = (id: string) => {
 };
 // 修改留言
 const modifyMessage = (message: any) => {
+  console.log(message);
   emits("modify", message);
+};
+// 删除留言
+const deleteMessage = (id: string) => {
+  emits("delete", id);
+};
+const replyMessage = () => {
+  if (replyMessageParams.value.content.length === 0) {
+    return WMessage.error("评论内容不能为空");
+  }
+  emits("reply", replyMessageParams.value);
+  cancelReplyMessage();
+};
+// 回复留言内容及id
+const replyMessageParams = ref({
+  // 回复目标消息id
+  messagePid: "",
+  // 回复用户
+  toUserId: "",
+  // 回复内容
+  content: "",
+  // 是否发送邮件
+  isSendEmail: 0,
+});
+
+// 回复哪条消息
+const replyMessageId = ref();
+// 这是回复评论
+const openReplyMessageBox = (
+  message: any,
+  messagePid: string | null = null
+) => {
+  if (messagePid) {
+    replyMessageParams.value.messagePid = messagePid;
+  } else {
+    replyMessageParams.value.messagePid = message.messageId;
+  }
+  replyMessageId.value = message.messageId;
+  replyMessageParams.value.toUserId = message?.userInfo.userId;
+};
+
+// 取消消息回复
+const cancelReplyMessage = () => {
+  replyMessageParams.value = {
+    messagePid: "",
+    toUserId: "",
+    content: "",
+    isSendEmail: 0,
+  };
+  replyMessageId.value = "";
 };
 </script>
 
 <template>
   <el-card class="mb20">
-    <div class="article-name">
+    <div class="article-name" v-if="props.comment.articleInfo?.title">
       文章:<span class="fz16 text-primary ml5"
         >《{{ props.comment.articleInfo.title }}》</span
       >
     </div>
     <div class="comment-inner">
-      <div class="comment-inner-avatar mr10">
-        <el-avatar :src="props.comment.userInfo.avatar" />
+      <div class="comment-inner-avatar pointer mr10">
+        <el-image
+          fit="cover"
+          :hide-on-click-modal="true"
+          :preview-src-list="srcList"
+          :src="props.comment.userInfo.avatar"
+          @click="srcList.push(props.comment.userInfo.avatar as never)"
+          @close="srcList = []"
+          :initial-index="0"
+          :min-scale="2"
+        />
       </div>
       <div class="comment-inner-content fz14 por">
         <div class="comment-content-author warp column start">
@@ -54,9 +119,7 @@ const modifyMessage = (message: any) => {
           </div>
           <div class="fz12 textColor">
             在{{
-              dayjs(props.comment.userInfo.createdAt).format(
-                "YYYY-MM-DD HH:mm:ss"
-              )
+              dayjs(props.comment.createdAt).format("YYYY-MM-DD HH:mm:ss")
             }}说
           </div>
         </div>
@@ -85,8 +148,68 @@ const modifyMessage = (message: any) => {
           >
             反对({{ props.comment.opposeNum || 0 }})
           </span>
+          <!-- 判断是否为评论页面 -->
+          <span
+            v-if="!props.comment.articleInfo"
+            @click="openReplyMessageBox(props.comment)"
+          >
+            回复
+          </span>
           <span @click="modifyMessage(props.comment)"> 修改 </span>
-          <span> 删除 </span>
+          <el-popconfirm
+            width="220"
+            confirm-button-text="确定"
+            cancel-button-text="取消"
+            :icon="InfoFilled"
+            icon-color="#626AEF"
+            title="请确认是否删除"
+            @confirm="deleteMessage(props.comment.messageId)"
+          >
+            <template #reference>
+              <span> 删除 </span>
+            </template>
+          </el-popconfirm>
+        </div>
+        <div
+          class="reply-message-box mt20"
+          v-if="
+            props.comment.messageId === replyMessageId &&
+            !props.comment.articleInfo?.title
+          "
+        >
+          <el-input
+            v-model="replyMessageParams.content"
+            :rows="6"
+            type="textarea"
+            placeholder="留言内容"
+            maxlength="500"
+            show-word-limit
+          />
+          <div class="mt10 flex">
+            <span class="mr10 textColor">发送邮件:</span>
+            <el-switch
+              v-model="replyMessageParams.isSendEmail"
+              class="ml-2"
+              inline-prompt
+              :active-value="1"
+              :inactive-value="0"
+              :active-color="theme.theme.list[theme.themeIndex].primary"
+              :inactive-color="theme.theme.list[theme.themeIndex].bg"
+              active-text="通知"
+              inactive-text="不通知"
+            ></el-switch>
+          </div>
+          <div class="flex mt10">
+            <div
+              @click="replyMessage"
+              class="animationBtn pointer bg-primary mr20 w200"
+            >
+              发送消息
+            </div>
+            <div class="cancle-btn">
+              <el-button @click="cancelReplyMessage">取消</el-button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -96,8 +219,17 @@ const modifyMessage = (message: any) => {
         v-for="item in props.comment.replyInfo"
         :key="item.messageId"
       >
-        <div class="comment-inner-avatar mr10">
-          <el-avatar :src="item.userInfo.avatar" />
+        <div class="comment-inner-avatar pointer mr10">
+          <el-image
+            :hide-on-click-modal="true"
+            :preview-src-list="srcList"
+            @click="srcList.push(props.comment.userInfo.avatar as never)"
+            @close="srcList = []"
+            :initial-index="0"
+            :min-scale="2"
+            fit="cover"
+            :src="item.userInfo.avatar"
+          />
         </div>
         <div class="comment-inner-content fz14 por">
           <div class="comment-content-author warp column start">
@@ -133,8 +265,67 @@ const modifyMessage = (message: any) => {
             >
               反对({{ item.opposeNum || 0 }})
             </span>
+            <span
+              v-if="!props.comment.articleInfo"
+              @click="openReplyMessageBox(item, item.messagePid)"
+            >
+              回复
+            </span>
             <span @click="modifyMessage(item)"> 修改 </span>
-            <span> 删除 </span>
+            <el-popconfirm
+              width="220"
+              confirm-button-text="确定"
+              cancel-button-text="取消"
+              :icon="InfoFilled"
+              icon-color="#626AEF"
+              title="请确认是否删除"
+              @confirm="deleteMessage(item.messageId)"
+            >
+              <template #reference>
+                <span> 删除 </span>
+              </template>
+            </el-popconfirm>
+          </div>
+          <div
+            class="reply-message-box mt20"
+            v-if="
+              item.messageId === replyMessageId &&
+              !props.comment.articleInfo?.title
+            "
+          >
+            <el-input
+              v-model="replyMessageParams.content"
+              :rows="6"
+              type="textarea"
+              placeholder="留言内容"
+              maxlength="500"
+              show-word-limit
+            />
+            <div class="mt10 flex">
+              <span class="mr10 textColor">发送邮件:</span>
+              <el-switch
+                v-model="replyMessageParams.isSendEmail"
+                class="ml-2"
+                inline-prompt
+                :active-value="1"
+                :inactive-value="0"
+                :active-color="theme.theme.list[theme.themeIndex].primary"
+                :inactive-color="theme.theme.list[theme.themeIndex].bg"
+                active-text="通知"
+                inactive-text="不通知"
+              ></el-switch>
+            </div>
+            <div class="flex mt10">
+              <div
+                @click="replyMessage"
+                class="animationBtn pointer bg-primary mr20 w200"
+              >
+                发送消息
+              </div>
+              <div class="cancle-btn">
+                <el-button @click="cancelReplyMessage">取消</el-button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -178,5 +369,18 @@ const modifyMessage = (message: any) => {
   .reply-box {
     display: flex;
   }
+}
+.comment-inner-avatar {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.reply-message-box {
+  width: 50%;
+}
+:deep(.el-textarea__inner) {
+  box-shadow: 0 0 90px #00000026;
+  -webkit-box-shadow: 0 0 90px rgba(0, 0, 0, 0.15);
 }
 </style>
