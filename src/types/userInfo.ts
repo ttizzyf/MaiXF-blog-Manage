@@ -1,3 +1,5 @@
+import { newRegister } from "./home.ts";
+import { userOptlogsItem } from "./userOpt.ts";
 // 邮箱验证码
 export interface userEmail {
   email: string;
@@ -47,4 +49,15 @@ export interface getUserListParams {
   pageSize: number;
   email: string;
   nickname: string;
+}
+
+export interface userOptLogs extends newRegister {
+  userId: string;
+}
+
+export interface userOptLogsDataType {
+  params: userOptLogs;
+  userOptLogsList: Array<userOptlogsItem>;
+  username: string;
+  userOptlogsTotal: number | null;
 }

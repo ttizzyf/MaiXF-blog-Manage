@@ -1,6 +1,12 @@
 <script lang="ts" setup>
-import { getUserList, resetUserPassword, userIsEnable } from "@/api/user.ts";
-import { ref, watch } from "vue";
+import {
+  getUserList,
+  resetUserPassword,
+  userIsEnable,
+  getUserOptLogs,
+} from "@/api/user.ts";
+import { userOptLogsDataType } from "@/types/userInfo";
+import { ref, watch, Ref } from "vue";
 import { Search } from "@element-plus/icons-vue";
 import { themeSetting } from "@/store/theme";
 import "@/styles/index.scss";
@@ -70,6 +76,49 @@ const userStatusChange = async (scope: any) => {
     (userList.value as any)[scope.$index].status = objKey;
     loadingStatus.value = "";
   }
+};
+
+const userOptLogsData: Ref<userOptLogsDataType> = ref({
+  params: {
+    pageSize: 5,
+    pageNum: 1,
+    userId: "",
+  },
+  username: "",
+  // 用户操作总数
+  userOptlogsTotal: null,
+  // 用户操作列表
+  userOptLogsList: [],
+});
+
+// 是否打开用户操作弹层
+const isOpenUserOptLogs = ref(false);
+
+const getUserOptLogsAPI = async () => {
+  const res = await getUserOptLogs(userOptLogsData.value.params);
+  userOptLogsData.value.userOptLogsList = res.data.data.data;
+  userOptLogsData.value.userOptlogsTotal = res.data.data.count;
+};
+
+// 查看用户操作记录
+const openUserOptLogsDialog = (id: string, nickname: string) => {
+  isOpenUserOptLogs.value = true;
+  userOptLogsData.value.params.userId = id;
+  userOptLogsData.value.username = nickname;
+  getUserOptLogsAPI();
+};
+
+// 关闭操作记录弹层
+const closeOptlogsDialog = () => {
+  isOpenUserOptLogs.value = false;
+  userOptLogsData.value.params = {
+    pageSize: 5,
+    pageNum: 1,
+    userId: "",
+  };
+  userOptLogsData.value.userOptLogsList = [];
+  userOptLogsData.value.userOptlogsTotal = null;
+  userOptLogsData.value.username = "";
 };
 
 watch(
@@ -228,6 +277,13 @@ watch(
                   >
                 </template>
               </el-popconfirm>
+              <el-button
+                @click="openUserOptLogsDialog(row.userId, row.nickname)"
+                auto-insert-space
+                type="success"
+                link
+                >用户操作</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -244,6 +300,69 @@ watch(
         />
       </div>
     </el-card>
+    <el-dialog
+      v-model="isOpenUserOptLogs"
+      width="800"
+      :title="userOptLogsData.username + '的操作日志记录'"
+      @close="closeOptlogsDialog"
+    >
+      <div
+        class="flex jcenter"
+        v-if="userOptLogsData.userOptLogsList.length === 0"
+      >
+        <img
+          style="width: 400px; height: 400px"
+          src="../../../assets/imgs/empty.png"
+          fit="cover"
+        />
+      </div>
+      <el-timeline v-else>
+        <el-timeline-item
+          v-for="(activity, index) in userOptLogsData.userOptLogsList"
+          placement="top"
+          :key="index"
+          :timestamp="`${dayjs(activity.createdAt).format(
+            'YYYY-MM-DD HH:mm:ss'
+          )}`"
+        >
+          <el-card>
+            <div class="flex">
+              <div class="mr20 w50">
+                <span class="mr5">内容:</span
+                ><span>{{ activity.content }}</span>
+              </div>
+              <div>
+                <span class="mr5 w50">模块:</span
+                ><span>{{ activity.module }}</span>
+              </div>
+            </div>
+            <div class="flex">
+              <div class="mr20 w50">
+                <span class="mr5">地址:</span
+                ><span>{{ activity.address }}</span>
+              </div>
+              <div>
+                <span class="mr5 w50">平台:</span
+                ><span>{{ activity.platform }}</span>
+              </div>
+            </div>
+          </el-card>
+        </el-timeline-item>
+      </el-timeline>
+      <div class="flex end mt10">
+        <el-pagination
+          small
+          background
+          hide-on-single-page
+          layout="prev, pager, next"
+          v-model:page-size="userOptLogsData.params.pageSize"
+          v-model:current-page="userOptLogsData.params.pageNum"
+          :total="userOptLogsData.userOptlogsTotal"
+          @change="getUserOptLogsAPI"
+          class="mt-4"
+        />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -260,5 +379,8 @@ watch(
 }
 :deep(.el-pager li:hover) {
   color: $primary;
+}
+:deep(.el-timeline) {
+  --el-timeline-node-color: rgba(0, 0, 0, 0.2);
 }
 </style>

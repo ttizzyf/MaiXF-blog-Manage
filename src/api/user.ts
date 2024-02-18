@@ -6,6 +6,7 @@ import {
   responseData,
   emitUserInfo,
   getUserListParams,
+  userOptLogs,
 } from "@/types/userInfo";
 
 // 用户登录
@@ -46,4 +47,9 @@ export const resetUserPassword = (data: { userId: string }) => {
 // 是否启用账户
 export const userIsEnable = (data: { userId: string; status: number }) => {
   return request.post<responseData>("/w1/manage/user/userIsEnable", data);
+};
+
+// 获取用户操作日志
+export const getUserOptLogs = (params: userOptLogs) => {
+  return request.get<responseData>("/w1/manage/user/optlogs", params);
 };
