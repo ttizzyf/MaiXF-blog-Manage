@@ -102,6 +102,9 @@
 .w32 {
   width: 32px;
 }
+.w48 {
+  width: 48px;
+}
 .w60 {
   width: 60px;
 }
@@ -131,6 +134,9 @@
 }
 .h32 {
   height: 32px;
+}
+.h48 {
+  height: 48px;
 }
 .h64 {
   height: 64px;
@@ -188,6 +194,12 @@
 }
 .tac {
   text-align: center;
+}
+.bdrs {
+  border-radius: 50%;
+}
+.hidden {
+  overflow: hidden;
 }
 .pointer {
   cursor: pointer;

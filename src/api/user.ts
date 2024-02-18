@@ -5,6 +5,7 @@ import {
   userEmail,
   responseData,
   emitUserInfo,
+  getUserListParams,
 } from "@/types/userInfo";
 
 // 用户登录
@@ -30,4 +31,19 @@ export const userLoginCodeAPI = () => {
 // 修改用户信息
 export const emitUserInfoAPI = (data: emitUserInfo) => {
   return request.post<responseData>("/w1/sys/auth/emitUser", data);
+};
+
+// 获取用户列表
+export const getUserList = (params: getUserListParams) => {
+  return request.get<responseData>("/w1/manage/user/list", params);
+};
+
+// 重置用户密码
+export const resetUserPassword = (data: { userId: string }) => {
+  return request.post<responseData>("/w1/manage/user/resetPassword", data);
+};
+
+// 是否启用账户
+export const userIsEnable = (data: { userId: string; status: number }) => {
+  return request.post<responseData>("/w1/manage/user/userIsEnable", data);
 };

@@ -40,3 +40,11 @@ export interface emitUserInfo {
   avatar?: string | null;
   website?: string | null;
 }
+
+// 获去用户列表参数
+export interface getUserListParams {
+  pageNum: number;
+  pageSize: number;
+  email: string;
+  nickname: string;
+}
