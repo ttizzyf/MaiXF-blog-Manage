@@ -1,3 +1,4 @@
+import { newRegister } from "./home.ts";
 // 用户操作
 export interface userOptlogsItem {
   actionId: string;
@@ -10,4 +11,11 @@ export interface userOptlogsItem {
   operatorId: string;
   platform: string;
   updatedAt: string;
+}
+// 请求参数
+export interface userOptlogsParamsType extends newRegister {
+  nickname: string;
+  module: string;
+  platform: string;
+  operatorIP: string;
 }
