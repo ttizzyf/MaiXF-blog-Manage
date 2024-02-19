@@ -141,8 +141,8 @@ const submitDeleteMessages = async (id: string) => {
     WNotification.success(res.data.message);
     // 当删除评论时，需要重新获取文章列表,当文章删除后小于总数则pageNum减一
     if (
-      commentParams.pageNum * commentParams.pageSize - 1 <=
-      +commentTotal.value
+      (commentParams.pageNum - 1) * commentParams.pageSize >=
+      +commentTotal.value - 1
     ) {
       if (commentParams.pageNum !== 1) {
         commentParams.pageNum--;

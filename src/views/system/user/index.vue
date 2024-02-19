@@ -210,6 +210,21 @@ watch(
           <el-table-column
             min-width="200"
             align="center"
+            prop="role"
+            label="用户角色"
+          >
+            <template #default="{ row }">
+              <el-tag
+                :type="
+                  row.roleInfo.roleName === '超级管理员' ? 'primary' : 'info'
+                "
+                >{{ row.roleInfo.roleName }}</el-tag
+              >
+            </template>
+          </el-table-column>
+          <el-table-column
+            min-width="200"
+            align="center"
             prop="nickname"
             label="用户昵称"
           />

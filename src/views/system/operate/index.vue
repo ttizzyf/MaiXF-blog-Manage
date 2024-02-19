@@ -3,9 +3,10 @@ import "@/styles/index.scss";
 import { themeSetting } from "@/store/theme";
 import { Search } from "@element-plus/icons-vue";
 import { ref, watch, Ref } from "vue";
-import { getOptlogsList } from "@/api/operate.ts";
+import { getOptlogsList, delOptlogsList } from "@/api/operate.ts";
 import { userOptlogsItem } from "@/types/userOpt.ts";
 import dayjs from "dayjs";
+import { WNotification } from "@/utils/toast";
 
 const theme = themeSetting();
 
@@ -69,6 +70,52 @@ const handleSelectionChange = (val: Array<userOptlogsItem>) => {
   deleteList.value = val;
 };
 
+// 删除操作日志记录
+const deleteListAPI = async () => {
+  let deleteArr: Array<string> = [];
+  deleteList.value.forEach((item) => {
+    deleteArr.push(item.actionId);
+  });
+  const res = await delOptlogsList(deleteArr);
+  if (res.data.status) {
+    WNotification.success(res.data.message);
+    let { pageNum, pageSize } = getUserOptlogsData.value.params;
+    if (
+      (pageNum - 1) * pageSize >=
+      +getUserOptlogsData.value.total - deleteArr.length
+    ) {
+      // 当前为第一页时则不能再将页数减一
+      if (pageNum !== 1) {
+        getUserOptlogsData.value.params.pageNum--;
+      }
+    }
+    await getOptlogsListAPI();
+  }
+};
+
+// 控制详情弹窗打开
+const isopenDetailsController = ref(false);
+
+// 详情弹窗内容
+const detailsData: Ref<userOptlogsItem> | Ref = ref({});
+
+// 查看详情
+const openDetails = (row: userOptlogsItem) => {
+  isopenDetailsController.value = true;
+  detailsData.value = row;
+};
+
+const closeDialog = () => {
+  detailsData.value = {};
+  isopenDetailsController.value = false;
+};
+
+// 删除操作日志按钮
+const delOptlogs = (row: any) => {
+  deleteList.value = [row];
+  deleteListAPI();
+};
+
 watch(
   () => getUserOptlogsData.value.params.pageNum,
   () => {
@@ -83,7 +130,7 @@ watch(
     <el-card shadow="hover">
       <el-scrollbar>
         <div class="flex between">
-          <div class="flex">
+          <div class="flex shrink0">
             <div class="shrink0">
               <el-input
                 class="w-50 m-2"
@@ -130,10 +177,9 @@ watch(
               <el-button @click="cancleOptlogs">重置</el-button>
             </div>
           </div>
-          <div class="shrink0">
-            <!-- <el-button>批量删除</el-button> -->
-            123456
-          </div>
+          <el-button class="ml10" type="danger" round @click="deleteListAPI"
+            >批量删除</el-button
+          >
         </div>
       </el-scrollbar>
       <div class="optlogs-list mt10">
@@ -191,10 +237,20 @@ watch(
             align="center"
           >
             <template #default="{ row }">
-              <el-button auto-insert-space type="success" link
+              <el-button
+                @click="openDetails(row)"
+                auto-insert-space
+                type="success"
+                link
                 >查看详情</el-button
               >
-              <el-button auto-insert-space type="danger" link>删除</el-button>
+              <el-button
+                auto-insert-space
+                type="danger"
+                link
+                @click="delOptlogs(row)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -210,6 +266,50 @@ watch(
           class="mt-4"
         />
       </div>
+      <el-dialog
+        v-model="isopenDetailsController"
+        title="查看操作日志详情"
+        @close="closeDialog"
+      >
+        <div>
+          <span class="fw700">操作人:</span
+          ><span class="ml10 fz12">{{ detailsData.operator }}</span>
+        </div>
+        <div class="mt10">
+          <span class="fw700">操作模块:</span
+          ><span class="ml10 fz12">{{ detailsData.module }}</span>
+        </div>
+        <div class="mt10">
+          <span class="fw700">操作平台:</span
+          ><span class="ml10 fz12">{{ detailsData.platform }}</span>
+        </div>
+        <div class="mt10">
+          <span class="fw700">IP地址:</span
+          ><span class="ml10">{{
+            phoneNumberMask(detailsData.operatorIP)
+          }}</span>
+        </div>
+        <div class="mt10">
+          <span class="fw700">设备位置:</span
+          ><span class="ml10 fz12">{{ detailsData.address }}</span>
+        </div>
+        <div class="mt10">
+          <span class="fw700">操作内容:</span
+          ><span class="ml10 fz12">{{ detailsData.content }}</span>
+        </div>
+        <div class="mt10">
+          <span class="fw700">操作时间:</span
+          ><span class="ml10 fz12">{{
+            dayjs(detailsData.createdAt).format("YYYY-MM-DD HH:mm:ss")
+          }}</span>
+        </div>
+        <div class="mt10">
+          <span class="fw700">更新时间:</span
+          ><span class="ml10 fz12">{{
+            dayjs(detailsData.updatedAt).format("YYYY-MM-DD HH:mm:ss")
+          }}</span>
+        </div>
+      </el-dialog>
     </el-card>
   </div>
 </template>
