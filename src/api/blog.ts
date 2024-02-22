@@ -55,5 +55,5 @@ export const deleteComment = (data: { messageId: string }) => {
 };
 // 获取留言列表
 export const getManageMessageList = (params: blogArticleType) => {
-  return request.get<responseData>("/w1/blog/manage_message/list", params);
+  return request.get<responseData>("/w1/blog/blog_comment/Messagelist", params);
 };

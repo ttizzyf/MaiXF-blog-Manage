@@ -4,7 +4,7 @@ import {
   createPermissions,
   updatePermissions,
 } from "@/api/permissions.ts";
-import { ref, watch } from "vue";
+import { ref, onMounted } from "vue";
 import { Search } from "@element-plus/icons-vue";
 import { themeSetting } from "@/store/theme";
 import dayjs from "dayjs";
@@ -15,8 +15,6 @@ const theme = themeSetting();
 
 const searchPermissionsData = ref({
   params: {
-    pageSize: 10,
-    pageNum: 1,
     remark: "",
   },
   list: [],
@@ -25,17 +23,17 @@ const searchPermissionsData = ref({
 // 获取权限列表
 const getPermissionsListAPI = async () => {
   const res = await getPermissionsList(searchPermissionsData.value.params);
-  searchPermissionsData.value.list = res.data.data.data;
+  searchPermissionsData.value.list = res.data.data.rows;
   searchPermissionsData.value.total = res.data.data.count;
+  console.log(searchPermissionsData.value.list);
 };
 
 // 重置查询条件
 const resetSearch = () => {
   searchPermissionsData.value.params = {
-    pageSize: 10,
-    pageNum: 1,
     remark: "",
   };
+  getPermissionsListAPI();
 };
 
 // 加载状态
@@ -146,13 +144,9 @@ const deletePermisssion = async (row: any) => {
   }
 };
 
-watch(
-  () => searchPermissionsData.value.params.pageNum,
-  () => {
-    getPermissionsListAPI();
-  },
-  { immediate: true, deep: true }
-);
+onMounted(() => {
+  getPermissionsListAPI();
+});
 </script>
 
 <template>
@@ -240,7 +234,7 @@ watch(
             </template>
           </el-table-column>
           <el-table-column
-            min-width="200"
+            min-width="80"
             align="center"
             prop="auth"
             label="按键权限"
@@ -251,7 +245,7 @@ watch(
             </template>
           </el-table-column>
           <el-table-column
-            min-width="200"
+            min-width="100"
             align="center"
             prop="disabled"
             label="状态"
@@ -273,7 +267,7 @@ watch(
             </template>
           </el-table-column>
           <el-table-column
-            min-width="200"
+            min-width="120"
             align="center"
             prop="createdAt"
             label="创建时间"
@@ -312,17 +306,6 @@ watch(
             </template>
           </el-table-column>
         </el-table>
-      </div>
-      <div class="flex end mt10">
-        <el-pagination
-          small
-          background
-          layout="prev, pager, next"
-          v-model:page-size="searchPermissionsData.params.pageSize"
-          v-model:current-page="searchPermissionsData.params.pageNum"
-          :total="searchPermissionsData.total"
-          class="mt-4"
-        />
       </div>
     </el-card>
     <el-dialog

@@ -1,6 +1,6 @@
 import { newRegister } from "./home.ts";
 // 获取权限列表参数
-export interface permissionsListType extends newRegister {
+export interface permissionsListType {
   remark: string;
 }
 export interface createPermissionsType {

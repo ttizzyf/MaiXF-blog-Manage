@@ -133,6 +133,18 @@ const frameIn = [
             },
           },
           {
+            path: "/system/roles",
+            name: "/system/roles",
+            component: () => import("@/views/system/roles/index.vue"),
+            meta: {
+              title: "角色管理",
+              hidden: false,
+              icon: "&#xe62c;",
+              link: false,
+              requiresAuth: true,
+            },
+          },
+          {
             path: "/system/power",
             name: "/system/power",
             component: () => import("@/views/system/power/index.vue"),
