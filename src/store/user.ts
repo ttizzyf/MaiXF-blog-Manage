@@ -7,13 +7,14 @@ export const useUserStore = defineStore("useUserStore", () => {
 
   function removeLogin() {
     storage.remove("userInfo");
+    storage.remove("perms");
     LoginInfo.value = null;
   }
 
   watch(
     LoginInfo,
     async () => {
-      console.log(LoginInfo.value);
+      console.log(LoginInfo.value.roleInfo.perms);
       storage.set("userInfo", LoginInfo.value);
     },
     { deep: true }

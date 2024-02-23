@@ -1,11 +1,19 @@
 <script lang="ts" setup>
 import "@/styles/index.scss";
-import { getRolesList, createRoles } from "@/api/roles.ts";
+import {
+  getRolesList,
+  createRoles,
+  updateRoles,
+  deleteRoleById,
+  getRolesPerms,
+} from "@/api/roles.ts";
+import { getPermissionsList } from "@/api/permissions.ts";
 import { ref, onMounted } from "vue";
 import { themeSetting } from "@/store/theme";
 import { Search } from "@element-plus/icons-vue";
 import dayjs from "dayjs";
 import { WMessage } from "@/utils/toast";
+import storage from "@/utils/storage";
 
 const theme = themeSetting();
 // 列表数据
@@ -64,22 +72,54 @@ const btnClose = () => {
     remark: "",
     perms: "",
   };
+  defaultCheckedKeys.value = [];
   createRolesDom.value.resetFields();
+};
+
+// 权限树状列表
+const permsTreeData = ref([]);
+
+// 默认选中节点
+const defaultCheckedKeys = ref([]);
+
+// 树状结构节点被选中时
+const handleCheckChange = (_data: any, keys: any) => {
+  createRolesData.value.perms = keys.checkedKeys
+    .map((key: any) => `${key}`)
+    .join("、");
 };
 
 // 保存角色
 const onSubmit = async () => {
   await createRolesDom.value.validate(async (valid: boolean, fields: any) => {
     if (valid) {
+      let res;
       if (!createRolesData.value.roleId) {
         // 新增角色
-        const res = await createRoles(createRolesData.value);
-        console.log(res);
+        res = await createRoles(createRolesData.value);
       } else {
         // 编辑角色
+        res = await updateRoles(createRolesData.value);
+        const userInfo = storage.get("userInfo");
+        console.log(userInfo.roleInfo.roleAuth);
+        // 如果修改的权限是当前登录用户，则重新获取权限
+        if (userInfo.roleInfo.roleAuth === createRolesData.value.roleAuth) {
+          const perms = await getRolesPerms({
+            roleAuth: createRolesData.value.roleAuth,
+          });
+          storage.set("perms", perms.data.data.perms);
+          let userInfo = storage.get("userInfo");
+          userInfo.roleInfo.perms = perms.data.data.perms;
+          storage.set("userInfo", userInfo);
+        }
       }
-
+      if (res.data.status) {
+        WMessage.success(res.data.message);
+      } else {
+        WMessage.error(res.data.message);
+      }
       btnClose();
+      getRolesListAPI();
     } else {
       let firstKey = Object.keys(fields)[0];
       let message = fields[firstKey][0].message;
@@ -89,8 +129,32 @@ const onSubmit = async () => {
 };
 
 // 编辑角色
-const editRoles = (row: any) => {
-  console.log(row);
+const editRoles = async (row: any) => {
+  createRolesData.value.roleName = row.roleName;
+  createRolesData.value.roleId = row.roleId;
+  createRolesData.value.roleAuth = row.roleAuth;
+  createRolesData.value.remark = row.remark;
+  createRolesData.value.perms = row.perms;
+  isRoelssDialog.value = true;
+  if (row.perms) {
+    defaultCheckedKeys.value = row.perms.split("、");
+  }
+  const res = await getPermissionsList({ remark: "" });
+  permsTreeData.value = res.data.data.rows;
+};
+
+// 删除角色
+const deleteRoles = async (row: any) => {
+  if (row.roleAuth === "SUPER-ADMIN") {
+    return WMessage.error("超级管理员角色不能删除");
+  }
+  const res = await deleteRoleById({ roleId: row.roleId });
+  if (res.data.status) {
+    WMessage.success(res.data.message);
+  } else {
+    WMessage.error(res.data.message);
+  }
+  getRolesListAPI();
 };
 
 onMounted(() => {
@@ -209,6 +273,7 @@ onMounted(() => {
                 >编辑角色</el-button
               >
               <el-popconfirm
+                @confirm="deleteRoles(row)"
                 title="请确认是否删除?"
                 confirm-button-text="确认"
                 cancel-button-text="取消"
@@ -240,7 +305,7 @@ onMounted(() => {
       title="新增角色"
       v-model="isRoelssDialog"
       @close="btnClose"
-      width="40%"
+      width="600"
     >
       <el-form
         :model="createRolesData"
@@ -267,6 +332,29 @@ onMounted(() => {
             v-model="createRolesData.remark"
             placeholder="请输入角色备注"
           ></el-input>
+        </el-form-item>
+        <el-form-item
+          v-if="createRolesData.roleId"
+          label="角色权限设置"
+          prop="perms"
+        >
+          <el-tree
+            :data="permsTreeData"
+            show-checkbox
+            :default-checked-keys="defaultCheckedKeys"
+            node-key="permissionId"
+            @check="handleCheckChange"
+          >
+            <template #default="{ data }">
+              <span class="custom-tree-node">
+                <span>{{ data.remark }}</span>
+                <el-tag class="ml10 tac" type="success"
+                  ><i v-if="data.auth" class="iconfont">&#xe642;</i
+                  >{{ data.key }}</el-tag
+                >
+              </span>
+            </template>
+          </el-tree>
         </el-form-item>
         <el-form-item>
           <el-button

@@ -11,6 +11,7 @@ import { WNotification } from "@/utils/toast";
 import { useUserStore } from "../store/user.ts";
 import { useRouter } from "vue-router";
 import { visitorRecord } from "@/api/common.ts";
+import storage from "@/utils/storage";
 const router = useRouter();
 // import storage from "@/utils/storage";
 const userStore = useUserStore();
@@ -172,6 +173,8 @@ const userLogin = async () => {
     if (valid) {
       try {
         const { data } = await userLoginAPI(loginForm.value);
+        // 权限存储
+        storage.set("perms", data.data.roleInfo.perms);
         userStore.LoginInfo = data.data;
         WNotification.success(data.message);
         visitorRecord({ type: 1, nickname: userStore.LoginInfo.nickname });

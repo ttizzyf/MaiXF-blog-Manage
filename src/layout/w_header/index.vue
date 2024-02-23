@@ -5,7 +5,6 @@ import { themeSetting } from "@/store/theme.ts";
 import { useUserStore } from "@/store/user.ts";
 import WHeadMenu from "@/components/WHeadMenu.vue";
 import WThemeDrawer from "@/components/WThemeDrawer.vue";
-import storage from "@/utils/storage.ts";
 import { useRouter } from "vue-router";
 import WBreadcrumb from "@/components/WBreadcrumb.vue";
 import "@/styles/index.scss";
@@ -18,7 +17,7 @@ const BlogName = ref(import.meta.env.VITE_APP_WEB_TITLE);
 
 // 退出登录
 const exitLogin = () => {
-  storage.remove("userInfo");
+  user.removeLogin();
   router.push("/login");
 };
 </script>
