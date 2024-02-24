@@ -16,7 +16,7 @@ const router = createRouter({
 router.beforeEach((to, _from, next) => {
   // 如果没有权限,返回404页面
   if (to.matched.length === 0) {
-    next("/404");
+    next("/401");
   } else {
     // 修改标题
     window.document.title =

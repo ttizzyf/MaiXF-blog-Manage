@@ -70,12 +70,12 @@ const exitLogin = () => {
               <div class="avatar">
                 <el-image
                   style="height: 25px; width: 25px"
-                  :src="user.LoginInfo.avatar"
+                  :src="user.LoginInfo?.avatar"
                   fit="cover"
                 />
               </div>
               <span class="ml10 fz12 text-seconed w64">{{
-                user.LoginInfo.nickname
+                user.LoginInfo?.nickname
               }}</span>
             </div>
           </template>

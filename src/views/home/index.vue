@@ -424,7 +424,7 @@ onBeforeUnmount(() => {
           />
           <div class="ml20 welcome-text fz20 text-main">
             <div class="welcome-title fw700">
-              {{ userInfo.LoginInfo.nickname }},{{ timeState }},欢迎到来!
+              {{ userInfo.LoginInfo?.nickname }},{{ timeState }},欢迎到来!
             </div>
             <div class="welcome-note fz14">{{ welcomeNote }}</div>
           </div>
