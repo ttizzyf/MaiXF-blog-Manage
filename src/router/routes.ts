@@ -97,19 +97,6 @@ const frameIn = [
         ],
       },
       {
-        path: "/message",
-        name: "/message",
-        component: () => import("@/views/message/index.vue"),
-        meta: {
-          title: "消息管理",
-          hidden: false,
-          icon: "&#xe608;",
-          link: false,
-          requiresAuth: true,
-        },
-        children: [],
-      },
-      {
         path: "/system",
         name: "/system",
         meta: {

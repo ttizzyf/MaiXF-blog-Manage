@@ -57,8 +57,6 @@ const errorHandler = (error: any) => {
         WNotification.error(data.message || "参数校验失败");
         return Promise.reject(data.message ?? "参数校验失败");
       case 401:
-        router.push("/login");
-        storage.remove("userInfo");
         WNotification.error(data.message || "未授权");
         return Promise.reject(data.message ?? "未授权");
       case 404:
