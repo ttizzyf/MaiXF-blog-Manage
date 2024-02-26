@@ -20,7 +20,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/w1": {
-        target: "http://localhost:4089",
+        target: "http://127.0.0.1:4089",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/w1/, ""),
       },
