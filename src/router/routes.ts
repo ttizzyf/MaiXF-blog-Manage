@@ -157,6 +157,31 @@ const frameIn = [
           },
         ],
       },
+      {
+        path: "/admin",
+        name: "/admin",
+        meta: {
+          title: "管理员",
+          hidden: false,
+          icon: "&#xe600;",
+          link: false,
+          requiresAuth: true,
+        },
+        children: [
+          {
+            path: "/admin/letter",
+            name: "/admin/letter",
+            component: () => import("@/views/admin/letter/index.vue"),
+            meta: {
+              title: "私信管理",
+              hidden: false,
+              icon: "&#xe62c;",
+              link: false,
+              requiresAuth: true,
+            },
+          },
+        ],
+      },
     ],
     meta: {
       title: "布局",
