@@ -424,7 +424,7 @@ const refreshArticleList = () => {
                 </el-button>
                 <el-popconfirm
                   @confirm="deleteArticleAPI(row.id)"
-                  title="请确认是否博文?"
+                  title="请确认是否删除博文?"
                   confirm-button-text="确认"
                   cancel-button-text="取消"
                 >
