@@ -11,3 +11,8 @@ export const manageFriendList = (params: friendParamsType) => {
 export const updateFriendLink = (data: FriendLinkItem) => {
   return request.post<responseData>("/w1/sys/friend/update", data);
 };
+
+// 创建友链
+export const createFriendLink = (data: FriendLinkItem) => {
+  return request.post<responseData>("/w1/sys/friend/create", data);
+};

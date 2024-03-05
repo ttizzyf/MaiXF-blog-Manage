@@ -14,4 +14,5 @@ export interface FriendLinkItem {
   describe?: string;
   isShow?: number;
   status?: number;
+  [key: string]: string | number | undefined; // 添加索引签名
 }
