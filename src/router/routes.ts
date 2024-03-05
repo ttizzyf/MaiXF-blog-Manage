@@ -180,6 +180,18 @@ const frameIn = [
               requiresAuth: true,
             },
           },
+          {
+            path: "/admin/friendLink",
+            name: "/admin/friendLink",
+            component: () => import("@/views/admin/friendLink/index.vue"),
+            meta: {
+              title: "友链管理",
+              hidden: false,
+              icon: "&#xe62c;",
+              link: false,
+              requiresAuth: true,
+            },
+          },
         ],
       },
     ],
