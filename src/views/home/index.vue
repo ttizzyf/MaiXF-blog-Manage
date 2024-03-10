@@ -377,7 +377,9 @@ const disabled = computed(() => loading.value && noMore.value);
 // 加载更多
 const load = async () => {
   loading.value = true;
-  if (newUserList.value.length !== 0 && NewUser.pageTotal < 5) return;
+  if (newUserList.value.length !== 0 && NewUser.pageTotal < 5) {
+    return (loading.value = false);
+  }
   const res = await getNewRegisiterList(NewUser.Params);
   newUserList.value.push(...res.data.data.data);
   NewUser.pageTotal = res.data.data.count;
@@ -558,7 +560,7 @@ onBeforeUnmount(() => {
                 <li
                   v-for="item in newUserList"
                   :key="item.userId"
-                  class="list-item"
+                  class="list-item pointer"
                 >
                   <div class="new-user-avatar">
                     <img class="avatar" :src="item.avatar" alt="" />

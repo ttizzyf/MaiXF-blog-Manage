@@ -192,6 +192,18 @@ const frameIn = [
               requiresAuth: true,
             },
           },
+          {
+            path: "/admin/webSetting",
+            name: "/admin/webSetting",
+            component: () => import("@/views/admin/webSetting/index.vue"),
+            meta: {
+              title: "网站设置",
+              hidden: false,
+              icon: "&#xe62c;",
+              link: false,
+              requiresAuth: true,
+            },
+          },
         ],
       },
     ],

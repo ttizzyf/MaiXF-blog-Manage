@@ -2,9 +2,32 @@
 import "@/styles/index.scss";
 import "@/plugins/mdPlugins.js";
 import { useArticleStore } from "@/store/article.ts";
-import { ref } from "vue";
+import { ref, watchEffect, computed } from "vue";
 import storage from "@/utils/storage";
 import axios from "axios";
+
+const props = defineProps({
+  mdContent: {
+    type: String,
+    default() {
+      return "";
+    },
+  },
+  mode: {
+    type: String,
+    default() {
+      //可选值：edit(纯编辑模式) editable(编辑与预览模式) preview(纯预览模式)。
+      return "editable";
+    },
+  },
+  type: {
+    type: String,
+    default() {
+      // article 时为文章编辑 , other为其余为传入
+      return "article";
+    },
+  },
+});
 
 const articleStore = useArticleStore();
 const toolbar = {
@@ -57,6 +80,28 @@ const handleUploadImage = (_event: any, _insertImage: any, files: any[]) => {
   );
 };
 
+const editorContent = computed({
+  get() {
+    // 如果type为article,绑定值为articleStore数据
+    if (props.type === "article") {
+      return articleStore.editArticleData.content;
+    } else {
+      return content.value;
+    }
+  },
+  set(value) {
+    if (props.type === "article") {
+      articleStore.editArticleData.content = value;
+    } else {
+      content.value = value as string;
+    }
+  },
+});
+
+watchEffect(() => {
+  content.value = props.mdContent;
+});
+
 // 双向数据绑定
 const handleChange = (val: any) => {
   // 父组件使用 v-model:value  或者 @update:value
@@ -67,9 +112,10 @@ const handleChange = (val: any) => {
 <template>
   <div>
     <v-md-editor
-      v-model="articleStore.editArticleData.content"
+      v-model="editorContent"
       ref="editor"
       height="400px"
+      :mode="mode"
       placeholder="请输入内容"
       :left-toolbar="toolbar.leftToolbar"
       :right-toolbar="toolbar.rightToolbar"

@@ -292,7 +292,7 @@
   text-decoration: none;
   border-radius: 3px;
   color: $main;
-  background-color: $seconed;
+  background-color: $primary;
   padding: 0 16px;
   height: 32px;
   line-height: 32px;
@@ -383,6 +383,10 @@
     border-color: $primary;
     background-color: #ffffff;
   }
+}
+
+.primary-color {
+  color: $primary;
 }
 
 // .lazy-image {

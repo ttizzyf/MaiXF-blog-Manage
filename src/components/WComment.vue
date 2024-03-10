@@ -116,6 +116,15 @@ const cancelReplyMessage = () => {
         <div class="comment-content-author warp column start">
           <div class="comment-content-author-name textColor fw700 fz14 lh1 mb5">
             {{ props.comment.userInfo.nickname }}
+            <span
+              v-if="
+                props.comment.userInfo['roleInfo.roleAuth'] === 'SUPER-ADMIN'
+              "
+            >
+              <el-tag type="success" effect="dark" size="small" round>
+                管理员
+              </el-tag>
+            </span>
           </div>
           <div class="fz12 textColor">
             在{{
@@ -234,7 +243,20 @@ const cancelReplyMessage = () => {
         <div class="comment-inner-content fz14 por">
           <div class="comment-content-author warp column start">
             <span class="textColor fw700 fz14 lh1 mb5">
-              {{ item.userInfo.nickname }}@{{ item.toUserInfo.nickname }}
+              {{ item.userInfo.nickname }}
+              <span v-if="item.userInfo['roleInfo.roleAuth'] === 'SUPER-ADMIN'">
+                <el-tag type="success" effect="dark" size="small" round>
+                  管理员
+                </el-tag>
+              </span>
+              @{{ item.toUserInfo.nickname }}
+              <span
+                v-if="item.toUserInfo['roleInfo.roleAuth'] === 'SUPER-ADMIN'"
+              >
+                <el-tag type="success" effect="dark" size="small" round>
+                  管理员
+                </el-tag>
+              </span>
             </span>
             <div class="fz12 textColor">
               在{{ dayjs(item.createdAt).format("YYYY-MM-DD HH:mm:ss") }}说

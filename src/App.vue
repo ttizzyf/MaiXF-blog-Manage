@@ -3,11 +3,19 @@ import "./assets/font/index.scss";
 import { onMounted } from "vue";
 import { themeSetting } from "./store/theme";
 import { useRouter } from "vue-router";
+import { loadWebSetting } from "@/api/common";
 import storage from "./utils/storage";
 const theme = themeSetting();
 const router = useRouter();
+
+// 加载网站设置
+const loadWebSettingAPI = async () => {
+  const res = await loadWebSetting();
+  console.log(res);
+};
 // 加载主题色
 onMounted(() => {
+  loadWebSettingAPI();
   // 首次加载需要让主题色为最后一个,因为changeColor默认index+1
   theme.themeIndex = theme.theme.list.length - 1;
   theme.ChangeColor();
