@@ -278,6 +278,10 @@ const keepWebSetting = () => {
                     ).join("、");
                     const res = await updateWebSetting(setting);
                     console.log(res);
+                    if (res.data.status) {
+                      WMessage.success("保存成功");
+                      iframeId.value.src = iframeSrc.value;
+                    }
                     // 成功处理
                   } else {
                     let firstKey = Object.keys(footerFields)[0];
@@ -301,6 +305,10 @@ const keepWebSetting = () => {
     }
   });
 };
+
+const iframeId = ref();
+
+const iframeSrc = ref("http://192.168.0.94:8001/");
 
 onMounted(() => {
   loadWebSettingAPI();
@@ -593,7 +601,13 @@ onMounted(() => {
       </el-card>
     </div>
     <div class="admin-box">
-      <el-card class="card-box" shadow="hover"> </el-card>
+      <iframe
+        ref="iframeId"
+        class="iframeSrc"
+        :src="iframeSrc"
+        width="100%"
+        height="100%"
+      ></iframe>
     </div>
   </div>
 </template>
@@ -613,7 +627,9 @@ onMounted(() => {
   }
   .admin-box {
     width: calc(60% - 20px);
-    height: 100%;
+    .card-box {
+      height: 100%;
+    }
   }
 }
 .theme-box {

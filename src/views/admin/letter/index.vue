@@ -156,7 +156,7 @@ watch(
               <div></div>
               <img
                 style="width: 400px; height: 400px"
-                src="../../../assets/imgs/noPermission.png"
+                src="../../../../public/noPermission.png"
                 fit="cover"
               />
             </template>

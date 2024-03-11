@@ -419,11 +419,7 @@ onBeforeUnmount(() => {
     <el-row :gutter="10">
       <el-col :md="24" :lg="18">
         <div class="welcome suspension">
-          <img
-            style="height: 100px"
-            src="../../assets/imgs/welcome.png"
-            alt=""
-          />
+          <img style="height: 100px" src="../../../public/welcome.png" alt="" />
           <div class="ml20 welcome-text fz20 text-main">
             <div class="welcome-title fw700">
               {{ userInfo.LoginInfo?.nickname }},{{ timeState }},欢迎到来!
@@ -434,7 +430,7 @@ onBeforeUnmount(() => {
       </el-col>
       <el-col :lg="6">
         <div class="flex column center working">
-          <img class="work-coffee" src="../../assets/imgs/coffee.png" alt="" />
+          <img class="work-coffee" src="../../../public/coffee.png" alt="" />
           <div class="working-text text-seconed">
             您今天已经工作了<span class="time">{{
               state.workingTimeFormat
