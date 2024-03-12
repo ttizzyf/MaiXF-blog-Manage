@@ -308,7 +308,7 @@ const keepWebSetting = () => {
 
 const iframeId = ref();
 
-const iframeSrc = ref("http://192.168.0.94:8001/");
+const iframeSrc = ref("http://www.maixf.top:4089/#/home");
 
 onMounted(() => {
   loadWebSettingAPI();

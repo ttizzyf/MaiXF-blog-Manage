@@ -356,7 +356,7 @@ const NewUser = reactive({
     pageSize: 5,
     pageNum: 1,
   },
-  pageTotal: 0,
+  pageTotal: 1,
 });
 
 // 最新注册用户列表
@@ -366,20 +366,17 @@ const newUserList: any = ref([]);
 const loading = ref(false);
 
 // 数据加载完毕
-const noMore = computed(
-  () =>
-    (NewUser.Params.pageNum - 1) * NewUser.Params.pageSize <= NewUser.pageTotal
-);
+const noMore = computed(() => newUserList.value.length >= NewUser.pageTotal);
 
 // 是否禁用无限滚动
 const disabled = computed(() => loading.value && noMore.value);
 
 // 加载更多
 const load = async () => {
-  loading.value = true;
-  if (newUserList.value.length !== 0 && NewUser.pageTotal < 5) {
-    return (loading.value = false);
+  if (loading.value || noMore.value) {
+    return;
   }
+  loading.value = true;
   const res = await getNewRegisiterList(NewUser.Params);
   newUserList.value.push(...res.data.data.data);
   NewUser.pageTotal = res.data.data.count;

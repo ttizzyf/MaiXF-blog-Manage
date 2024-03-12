@@ -14,7 +14,7 @@ export const useUserStore = defineStore("useUserStore", () => {
   watch(
     LoginInfo,
     async () => {
-      console.log(LoginInfo.value.roleInfo.perms);
+      console.log(LoginInfo.value?.roleInfo.perms);
       storage.set("userInfo", LoginInfo.value);
     },
     { deep: true }

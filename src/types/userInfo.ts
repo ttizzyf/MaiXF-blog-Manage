@@ -26,6 +26,7 @@ export interface GenerateThemeColor extends userEmail {
 export interface userLogin extends userEmail {
   password: string;
   code: number | null;
+  visitor?: string;
 }
 // 用户注册
 export interface userRegister extends userEmail {

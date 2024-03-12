@@ -4,9 +4,12 @@ import { WNotification } from "./toast.ts";
 import storage from "../utils/storage.ts";
 import router from "@/router";
 
+let baseURL =
+  process.env.NODE_ENV === "development" ? "/w1" : "http://www.maixf.top:4089";
+
 const Request = axios.create({
   // 基础路径到代理服务器被转换
-  baseURL: "/w1",
+  baseURL,
   timeout: 60 * 1000,
 });
 // 请求拦截器，携带token

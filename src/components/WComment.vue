@@ -80,6 +80,10 @@ const openReplyMessageBox = (
   replyMessageParams.value.toUserId = message?.userInfo.userId;
 };
 
+const jumpToArticle = (id: string) => {
+  window.open(`http://www.maixf.top:4089/#/blogDetail/${id}`, "_blank");
+};
+
 // 取消消息回复
 const cancelReplyMessage = () => {
   replyMessageParams.value = {
@@ -95,7 +99,9 @@ const cancelReplyMessage = () => {
 <template>
   <el-card class="mb20">
     <div class="article-name" v-if="props.comment.articleInfo?.title">
-      文章:<span class="fz16 text-primary ml5"
+      文章:<span
+        @click="jumpToArticle(props.comment.articleInfo.id)"
+        class="fz16 text-primary ml5 pointer"
         >《{{ props.comment.articleInfo.title }}》</span
       >
     </div>

@@ -4,7 +4,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue() as any],
   resolve: {
     alias: {
       "@": `${path.resolve(__dirname, "src")}/`,
@@ -23,7 +23,7 @@ export default defineConfig({
         target:
           process.env.NODE_ENV === "development"
             ? "http://127.0.0.1:4089"
-            : "http://120.55.46.157:4089",
+            : "http://www.maixf.top:4089",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/w1/, ""),
       },

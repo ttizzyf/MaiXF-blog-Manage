@@ -13,7 +13,7 @@ export const useArticleStore = defineStore("article", () => {
   const editArticleData: Ref<updateArticleType> = ref({
     id: "",
     title: "",
-    cover: "http://localhost:4089/uploads/images/defaultCover.png",
+    cover: "http://www.maixf.top:4089/uploads/images/defaultCover.png",
     abstract: "",
     content: "",
     remark: "",
@@ -29,7 +29,7 @@ export const useArticleStore = defineStore("article", () => {
     editArticleData.value = {
       id: "",
       title: "",
-      cover: "http://localhost:4089/uploads/images/defaultCover.png",
+      cover: "http://www.maixf.top:4089/uploads/images/defaultCover.png",
       abstract: "",
       content: "",
       remark: "",
@@ -46,7 +46,7 @@ export const useArticleStore = defineStore("article", () => {
   const imagesPreviewList = ref([]);
   // 默认图片预览列表
   const defaultImagesPreviewList = ref([
-    "http://localhost:4089/uploads/images/defaultCover.png",
+    "http://www.maixf.top:4089/uploads/images/defaultCover.png",
   ]);
 
   // 匹配相同键名元素并赋值

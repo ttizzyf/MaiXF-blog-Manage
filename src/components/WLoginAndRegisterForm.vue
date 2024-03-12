@@ -21,8 +21,8 @@ const svgState = ref({
 });
 
 const loginForm = ref({
-  email: "1374144742@qq.com",
-  password: "lcl17707145515",
+  email: "",
+  password: "",
   code: null,
 });
 
@@ -186,6 +186,21 @@ const userLogin = async () => {
   });
 };
 
+const visitorLogin = async () => {
+  const { data } = await userLoginAPI({
+    email: "manage.visitor",
+    password: "admin",
+    code: 222,
+    visitor: "visitor",
+  });
+  // 权限存储
+  storage.set("perms", data.data.roleInfo.perms);
+  userStore.LoginInfo = data.data;
+  WNotification.success("欢迎访客访问");
+  visitorRecord({ type: 1, nickname: userStore.LoginInfo.nickname });
+  router.push("/home");
+};
+
 const tryDemo = async () => {};
 
 onMounted(() => {
@@ -246,7 +261,9 @@ onMounted(() => {
         <div class="animationBtn pointer" @click="userLogin">登录</div>
       </div>
       <div class="login-way-box mt20 flex between">
-        <div class="animationBtn pointer w64 mr10">游客浏览</div>
+        <div @click="visitorLogin" class="animationBtn pointer w64 mr10">
+          游客浏览
+        </div>
         <el-button disabled>手机登录</el-button>
         <el-button disabled>二维码登录</el-button>
       </div>
