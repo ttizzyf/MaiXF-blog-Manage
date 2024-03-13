@@ -308,7 +308,17 @@ const keepWebSetting = () => {
 
 const iframeId = ref();
 
-const iframeSrc = ref("http://www.maixf.top:4089/#/home");
+const iframeSrc = ref(
+  process.env.NODE_ENV === "development"
+    ? "http://192.168.146.223:8001/"
+    : "http://www.maixf.top:4089"
+);
+
+let uploadUrl = ref(
+  process.env.NODE_ENV === "development"
+    ? "/w1/w1/common/upload"
+    : "http://www.maixf.top:4089/w1/common/upload"
+);
 
 onMounted(() => {
   loadWebSettingAPI();
@@ -375,7 +385,7 @@ onMounted(() => {
                       @error="handleWxImageError"
                       :show-file-list="false"
                       :limit="1"
-                      action="/w1/w1/common/upload"
+                      :action="uploadUrl"
                     >
                       <el-button
                         :color="theme.theme.list[theme.themeIndex].primary"

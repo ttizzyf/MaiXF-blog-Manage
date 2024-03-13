@@ -104,6 +104,18 @@ const btnOk = async () => {
   });
 };
 
+let uploadMDUrl = ref(
+  process.env.NODE_ENV === "development"
+    ? "/w1/w1/blog/blog_article/uploadArticleMd"
+    : "http://www.maixf.top:4089/w1/blog/blog_article/uploadArticleMd"
+);
+
+let uploadUrl = ref(
+  process.env.NODE_ENV === "development"
+    ? "/w1/w1/common/upload"
+    : "http://www.maixf.top:4089/w1/common/upload"
+);
+
 // 当改变文章为原创时
 watch(
   () => articleStore.editArticleData.isReship,
@@ -152,7 +164,7 @@ watch(
             @success="handleMDSuccess"
             @error="handleMDError"
             :show-file-list="false"
-            action="/w1/w1/blog/blog_article/uploadArticleMd"
+            :action="uploadMDUrl"
           >
             <el-button :color="theme.theme.list[theme.themeIndex].primary">
               <span
@@ -191,7 +203,7 @@ watch(
           :show-file-list="false"
           :limit="1"
           :multiple="false"
-          action="/w1/w1/common/upload"
+          :action="uploadUrl"
         >
           <el-button :color="theme.theme.list[theme.themeIndex].primary">
             <span

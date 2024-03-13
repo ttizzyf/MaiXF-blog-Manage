@@ -252,7 +252,7 @@ const refreshArticleList = () => {
             <template #empty>
               <img
                 style="width: 400px; height: 400px"
-                src="../../../../public/empty.png"
+                src="../../../assets/imgs/empty.png"
                 fit="cover"
               />
             </template>

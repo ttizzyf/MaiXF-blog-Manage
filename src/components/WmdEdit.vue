@@ -43,6 +43,12 @@ const emit = defineEmits(["update:value"]);
 
 const content = ref("");
 
+let uploadUrl = ref(
+  process.env.NODE_ENV === "development"
+    ? "/w1/w1/common/upload"
+    : "http://www.maixf.top:4089/w1/common/upload"
+);
+
 const handleUploadImage = (_event: any, _insertImage: any, files: any[]) => {
   // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
   let file = files[0];
@@ -54,7 +60,7 @@ const handleUploadImage = (_event: any, _insertImage: any, files: any[]) => {
       authorization: storage.get("userInfo").token,
     },
   };
-  axios.post(`/w1/w1/common/upload`, param, config).then(
+  axios.post(uploadUrl.value, param, config).then(
     (response: {
       data: {
         status: any;
