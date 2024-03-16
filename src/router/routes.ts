@@ -31,7 +31,7 @@
 const frameIn = [
   {
     path: "/",
-    redirect: { name: "/home" },
+    redirect: { path: "/home" },
     component: () => import("@/layout/index.vue"),
     children: [
       {

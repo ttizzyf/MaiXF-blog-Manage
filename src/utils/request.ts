@@ -30,7 +30,6 @@ Request.interceptors.request.use(
 // 响应拦截器
 Request.interceptors.response.use(
   (response) => {
-    // const { data } = response;
     const contentType = response.headers["Content-Type"];
     if (
       contentType === "application/octet-stream" ||
@@ -61,6 +60,7 @@ const errorHandler = (error: any) => {
         return Promise.reject(data.message ?? "参数校验失败");
       case 401:
         WNotification.error(data.message || "未授权");
+        router.push("/login");
         return Promise.reject(data.message ?? "未授权");
       case 404:
         // console.error("404:" + data.message);
